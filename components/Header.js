@@ -135,11 +135,6 @@ class Header extends React.Component {
             isWhite={white}
           />,
         ];
-      case "Account":
-        return [
-          <BellButton key="chat-profile" navigation={navigation} />,
-          <BasketButton key="basket-deals" navigation={navigation} />,
-        ];
       case "Product":
         return [
           <BellButton

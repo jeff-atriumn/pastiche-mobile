@@ -25,14 +25,7 @@ function CustomDrawerContent({
   ...rest
 }) {
   const insets = useSafeArea();
-  const screens = [
-    "Atriumn",
-    "Components",
-    "Articles",
-    "Profile",
-    "Account",
-    "Settings",
-  ];
+  const screens = ["Atriumn", "Components", "Articles", "Profile", "Settings"];
   return (
     <Block
       style={styles.container}
@@ -73,19 +66,6 @@ function CustomDrawerContent({
                 marginHorizontal: 10,
               }}
             />
-            <Text
-              color={nowTheme.COLORS.WHITE}
-              style={{
-                marginTop: 30,
-                marginLeft: 20,
-                marginBottom: 10,
-                fontFamily: "montserrat-regular",
-                fontWeight: "300",
-                fontSize: 12,
-              }}
-            >
-              DOCUMENTATION
-            </Text>
           </Block>
           <DrawerCustomItem title="SIGN UP" navigation={navigation} />
           <DrawerCustomItem title="LOGIN" navigation={navigation} />
