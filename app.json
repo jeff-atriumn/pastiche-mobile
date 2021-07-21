@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Now UI PRO React Native",
-    "slug": "now-ui-pro-react-native",
+    "name": "Atriumn",
+    "slug": "Atriumn",
     "privacy": "public",
     "platforms": [
       "ios",
@@ -24,6 +24,6 @@
     "ios": {
       "supportsTablet": true
     },
-    "description": "Now UI PRO React Native, based on Now UI Design System. Coded by Creative Tim"
+    "description": "Atriumn"
   }
 }

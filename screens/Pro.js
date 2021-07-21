@@ -4,10 +4,11 @@ import {
   Image,
   StyleSheet,
   StatusBar,
-  Dimensions
+  Dimensions,
+  Platform,
 } from "react-native";
 import { Block, Text, theme } from "galio-framework";
-import { Button } from '../components';
+import { Button } from "../components";
 const { height, width } = Dimensions.get("screen");
 
 import nowTheme from "../constants/Theme";
@@ -28,61 +29,50 @@ class Pro extends React.Component {
         </Block>
 
         <Block flex space="between" style={styles.padded}>
-
-          <Block middle row style={{ marginTop: -50, marginBottom: 30}}>
-            <Text
-              color="white"
-              size={16}
-              style={{ fontFamily: 'montserrat-regular' }}
-            >
-              Coded by
-            </Text>
-            <Image
-              source={Images.CreativeTimLogo}
-              style={{
-                height: 29,
-                width: 129,
-                marginLeft: theme.SIZES.BASE
-              }}
-            />
-          </Block>
-
           <Block middle flex space="around" style={{ zIndex: 2 }}>
             <Block center style={styles.title}>
               <Block>
                 <Text color="white" size={60} style={styles.font}>
-                  Now UI
+                  Atriumn
                 </Text>
-              </Block>
-              <Block row>
-                <Text middle color="white" size={34} style={styles.font}>
-                  React Native
-                </Text>
-                <Block middle style={styles.pro}>
-                  <Text size={14} color="white" style={styles.font}>
-                  PRO
-                </Text>
-                </Block>
               </Block>
             </Block>
 
             <Block row middle style={{ marginTop: theme.SIZES.BASE * 4 }}>
-              <Image
-                source={Images.iOSLogo}
-                style={{ height: 38, width: 82, marginRight: theme.SIZES.BASE * 1.5 }} />
-              <Image
-                source={Images.androidLogo}
-                style={{ height: 38, width: 140 }} />
+              {Platform.OS === "ios" ? (
+                //if true
+                <Image
+                  source={Images.iOSLogo}
+                  style={{
+                    height: 38,
+                    width: 82,
+                    marginRight: theme.SIZES.BASE * 1.5,
+                  }}
+                />
+              ) : (
+                //if false
+                <Image
+                  source={Images.androidLogo}
+                  style={{ height: 38, width: 140 }}
+                />
+              )}
             </Block>
 
             <Block center>
               <Button
-              textStyle={{ fontFamily: 'montserrat-regular', fontSize: 12 }}
-              style={styles.button}
-              onPress={() => navigation.navigate("App")}
-            >
-              GET STARTED
-            </Button>
+                textStyle={{ fontFamily: "montserrat-regular", fontSize: 12 }}
+                style={styles.button}
+                onPress={() => navigation.navigate("Profile")}
+              >
+                SIGN UP
+              </Button>
+              <Button
+                textStyle={{ fontFamily: "montserrat-regular", fontSize: 12 }}
+                style={styles.button}
+                onPress={() => navigation.navigate("Profile")}
+              >
+                LOGIN
+              </Button>
             </Block>
           </Block>
         </Block>
@@ -93,24 +83,24 @@ class Pro extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: theme.COLORS.BLACK
+    backgroundColor: theme.COLORS.BLACK,
   },
   padded: {
     top: 270,
     paddingHorizontal: theme.SIZES.BASE * 2,
-    position: 'absolute',
+    position: "absolute",
     bottom: theme.SIZES.BASE,
-    zIndex: 2
+    zIndex: 2,
   },
   button: {
     width: width - theme.SIZES.BASE * 4,
-    height: theme.SIZES.BASE * 3
+    height: theme.SIZES.BASE * 3,
   },
   title: {
-    marginTop: "-5%"
+    marginTop: "-5%",
   },
   subTitle: {
-    marginTop: 20
+    marginTop: 20,
   },
   pro: {
     backgroundColor: nowTheme.COLORS.BLACK,
@@ -118,11 +108,11 @@ const styles = StyleSheet.create({
     marginLeft: 3,
     borderRadius: 4,
     height: 22,
-    marginTop: 0
+    marginTop: 0,
   },
   font: {
-    fontFamily: 'montserrat-bold'
-  }
+    fontFamily: "montserrat-bold",
+  },
 });
 
 export default Pro;
