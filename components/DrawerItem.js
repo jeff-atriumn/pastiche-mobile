@@ -10,10 +10,10 @@ class DrawerItem extends React.Component {
     const { title, focused } = this.props;
 
     switch (title) {
-      case "Home":
+      case "Atriumn":
         return (
           <Icon
-            name="app2x"
+            name="camera-compact2x"
             family="NowExtra"
             size={18}
             color={focused ? nowTheme.COLORS.PRIMARY : "white"}
@@ -23,7 +23,7 @@ class DrawerItem extends React.Component {
       case "Components":
         return (
           <Icon
-            name="atom2x"
+            name="badge2x"
             family="NowExtra"
             size={18}
             color={focused ? nowTheme.COLORS.PRIMARY : "white"}
@@ -33,7 +33,7 @@ class DrawerItem extends React.Component {
       case "Articles":
         return (
           <Icon
-            name="paper"
+            name="album"
             family="NowExtra"
             size={18}
             color={focused ? nowTheme.COLORS.PRIMARY : "white"}
@@ -79,7 +79,7 @@ class DrawerItem extends React.Component {
             color={focused ? nowTheme.COLORS.PRIMARY : "white"}
           />
         );
-      case "GETTING STARTED":
+      case "SIGN UP":
         return (
           <Icon
             name="spaceship2x"
@@ -89,6 +89,17 @@ class DrawerItem extends React.Component {
             color={focused ? nowTheme.COLORS.PRIMARY : "white"}
           />
         );
+      case "LOGIN":
+        return (
+          <Icon
+            name="agenda-bookmark2x"
+            family="NowExtra"
+            size={18}
+            style={{ borderColor: "rgba(0,0,0,0.5)", opacity: 0.5 }}
+            color={focused ? nowTheme.COLORS.PRIMARY : "white"}
+          />
+        );
+
       case "LOGOUT":
         return (
           <Icon
@@ -109,18 +120,18 @@ class DrawerItem extends React.Component {
 
     const containerStyles = [
       styles.defaultStyle,
-      focused ? [styles.activeStyle, styles.shadow] : null
+      focused ? [styles.activeStyle, styles.shadow] : null,
     ];
 
     return (
       <TouchableOpacity
         style={{ height: 60 }}
         onPress={() =>
-          title == "GETTING STARTED"
+          title == "SIGN UP"
             ? Linking.openURL(
                 "https://demos.creative-tim.com/now-ui-pro-react-native/docs/"
-              ).catch(err => console.error("An error occurred", err))
-            : navigation.navigate(title == 'LOGOUT' ? 'Onboarding' : title)
+              ).catch((err) => console.error("An error occurred", err))
+            : navigation.navigate(title == "LOGOUT" ? "Onboarding" : title)
         }
       >
         <Block flex row style={containerStyles}>
@@ -132,7 +143,7 @@ class DrawerItem extends React.Component {
               style={{
                 fontFamily: "montserrat-regular",
                 textTransform: "uppercase",
-                fontWeight: "300"
+                fontWeight: "300",
               }}
               size={12}
               bold={focused ? true : false}
@@ -151,22 +162,22 @@ const styles = StyleSheet.create({
   defaultStyle: {
     paddingVertical: 15,
     paddingHorizontal: 14,
-    color: "white"
+    color: "white",
   },
   activeStyle: {
     backgroundColor: nowTheme.COLORS.WHITE,
     borderRadius: 30,
-    color: "white"
+    color: "white",
   },
   shadow: {
     shadowColor: theme.COLORS.BLACK,
     shadowOffset: {
       width: 0,
-      height: 2
+      height: 2,
     },
     shadowRadius: 8,
-    shadowOpacity: 0.1
-  }
+    shadowOpacity: 0.1,
+  },
 });
 
 export default DrawerItem;

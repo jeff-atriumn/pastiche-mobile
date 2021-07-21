@@ -5,7 +5,7 @@ import {
   Dimensions,
   Image,
   TouchableOpacity,
-  Linking
+  Linking,
 } from "react-native";
 import { Block, Text, theme } from "galio-framework";
 import { useSafeArea } from "react-native-safe-area-context";
@@ -26,12 +26,12 @@ function CustomDrawerContent({
 }) {
   const insets = useSafeArea();
   const screens = [
-    "Home",
+    "Atriumn",
     "Components",
     "Articles",
     "Profile",
     "Account",
-    "Settings"
+    "Settings",
   ];
   return (
     <Block
@@ -61,19 +61,35 @@ function CustomDrawerContent({
               />
             );
           })}
-          <Block flex style={{ marginTop: 24, marginVertical: 8, paddingHorizontal: 8 }}>
           <Block
-            style={{ borderColor: 'white', width: '93%', borderWidth: StyleSheet.hairlineWidth, marginHorizontal: 10}}
-          />
-          <Text
-            color={nowTheme.COLORS.WHITE}
-            style={{ marginTop: 30, marginLeft: 20, marginBottom: 10, fontFamily: 'montserrat-regular', fontWeight: '300', fontSize: 12}}
+            flex
+            style={{ marginTop: 24, marginVertical: 8, paddingHorizontal: 8 }}
           >
-            DOCUMENTATION
-          </Text>
-        </Block>
-        <DrawerCustomItem title="GETTING STARTED" navigation={navigation}/>
-        <DrawerCustomItem title="LOGOUT" navigation={navigation}/>
+            <Block
+              style={{
+                borderColor: "white",
+                width: "93%",
+                borderWidth: StyleSheet.hairlineWidth,
+                marginHorizontal: 10,
+              }}
+            />
+            <Text
+              color={nowTheme.COLORS.WHITE}
+              style={{
+                marginTop: 30,
+                marginLeft: 20,
+                marginBottom: 10,
+                fontFamily: "montserrat-regular",
+                fontWeight: "300",
+                fontSize: 12,
+              }}
+            >
+              DOCUMENTATION
+            </Text>
+          </Block>
+          <DrawerCustomItem title="SIGN UP" navigation={navigation} />
+          <DrawerCustomItem title="LOGIN" navigation={navigation} />
+          <DrawerCustomItem title="LOGOUT" navigation={navigation} />
         </ScrollView>
       </Block>
     </Block>
@@ -84,7 +100,7 @@ function CustomDrawerContent({
 <TouchableOpacity onPress={() => props.navigation.navigate('Onboarding')}
           style={{ marginLeft: 10, fontFamily: 'montserrat-regular' }}
         >
-          <DrawerItem {...props} title="GETTING STARTED" />
+          <DrawerItem {...props} title="SIGN UP" />
         </TouchableOpacity>
 
 <TouchableOpacity onPress={() => props.navigation.navigate('Onboarding')}
@@ -96,21 +112,21 @@ function CustomDrawerContent({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   header: {
     paddingHorizontal: 28,
     paddingBottom: theme.SIZES.BASE,
     paddingTop: theme.SIZES.BASE * 3,
-    justifyContent: "center"
+    justifyContent: "center",
   },
   headerIcon: {
-    marginTop: -20
+    marginTop: -20,
   },
   logo: {
     height: 40,
-    width: 37
-  }
+    width: 37,
+  },
 });
 
 export default CustomDrawerContent;
