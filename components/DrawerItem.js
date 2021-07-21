@@ -69,7 +69,7 @@ class DrawerItem extends React.Component {
             color={focused ? nowTheme.COLORS.PRIMARY : "white"}
           />
         );
-      case "SIGN UP":
+      case "Sign Up":
         return (
           <Icon
             name="spaceship2x"
@@ -79,7 +79,7 @@ class DrawerItem extends React.Component {
             color={focused ? nowTheme.COLORS.PRIMARY : "white"}
           />
         );
-      case "LOGIN":
+      case "Login":
         return (
           <Icon
             name="agenda-bookmark2x"

@@ -25,7 +25,10 @@ function CustomDrawerContent({
   ...rest
 }) {
   const insets = useSafeArea();
-  const screens = ["Atriumn", "Components", "Articles", "Profile", "Settings"];
+  const screens = ["Atriumn", "Components", "Articles", "Profile"];
+
+  const utilityScreens = ["Settings", "Sign Up", "Login"];
+
   return (
     <Block
       style={styles.container}
@@ -50,7 +53,7 @@ function CustomDrawerContent({
                 title={item}
                 key={index}
                 navigation={navigation}
-                focused={state.index === index ? true : false}
+                // focused={state.index === index ? true : false}
               />
             );
           })}
@@ -67,8 +70,16 @@ function CustomDrawerContent({
               }}
             />
           </Block>
-          <DrawerCustomItem title="SIGN UP" navigation={navigation} />
-          <DrawerCustomItem title="LOGIN" navigation={navigation} />
+          {utilityScreens.map((item, index) => {
+            return (
+              <DrawerCustomItem
+                title={item}
+                key={index}
+                navigation={navigation}
+                // focused={state.index === index ? true : false}
+              />
+            );
+          })}
           <DrawerCustomItem title="LOGOUT" navigation={navigation} />
         </ScrollView>
       </Block>

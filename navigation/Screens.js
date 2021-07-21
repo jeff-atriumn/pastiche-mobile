@@ -321,6 +321,30 @@ function ProfileStack(props) {
   );
 }
 
+function AccountStack(props) {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Sign Up"
+        component={Register}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              title="Atriumn"
+              transparent
+              iconColor={"#333"}
+              navigation={navigation}
+              scene={scene}
+            />
+          ),
+          cardStyle: { backgroundColor: "#FFFFFF" },
+          headerTransparent: true,
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
 function AtriumnStack(props) {
   return (
     <Stack.Navigator mode="card" headerMode="screen" initialRouteName="Atriumn">
@@ -519,6 +543,7 @@ function AppStack(props) {
       <Drawer.Screen name="Components" component={ComponentsStack} />
       <Drawer.Screen name="Articles" component={ArticlesStack} />
       <Drawer.Screen name="Profile" component={ProfileStack} />
+      <Drawer.Screen name="Sign Up" component={AccountStack} />
       <Drawer.Screen name="Settings" component={SettingsStack} />
     </Drawer.Navigator>
   );
