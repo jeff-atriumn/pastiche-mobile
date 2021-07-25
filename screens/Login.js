@@ -14,10 +14,10 @@ import {
   Button as GaButton,
   theme,
 } from "galio-framework";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Button, Icon, Input } from "../components";
 import { Images, nowTheme } from "../constants";
-import { useAppContext } from "../libs/contextLib";
 import { Auth } from "aws-amplify";
 
 const { width, height } = Dimensions.get("screen");
@@ -28,34 +28,38 @@ const DismissKeyboard = ({ children }) => (
   </TouchableWithoutFeedback>
 );
 
-class Register extends React.Component {
-  // state = { isAuthenticated: useAppContext() };
+function validateForm() {
+  return fields.email.length > 0 && fields.password.length > 0;
+}
 
-  handleSubmit = async () => {
-    // const { email, password, name } = this.state;
-    this.setState({ isLoading: true });
+class Login extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { email: "" };
+  }
 
-    try {
-      const newUser = await Auth.signUp({
-        username: this.state.email,
-        password: this.state.password,
-      });
-      this.setState({
-        newUser,
-      });
-    } catch (e) {
-      alert(e.message);
+  handleSignUp = async () => {
+    this.props.navigation.navigate("Register");
+  };
+
+  handleSubmit() {
+    const { email, password } = this.state;
+
+    console.log(email);
+    console.log(this.state);
+
+    if (email) {
+      Auth.signIn(email, password)
+        .then((user) => {
+          AsyncStorage.setItem("userToken", user.username);
+          AsyncStorage.setItem("userEmail", email);
+          this.setState({ isAuthenticated: true });
+          this.props.navigation.navigate("Profile");
+        })
+        .catch((err) => alert(err.message));
+    } else {
+      alert("Email address cannot be empty");
     }
-
-    this.setState({ isLoading: false });
-  };
-
-  handleLogin = async () => {
-    this.props.navigation.navigate("Login");
-  };
-
-  onChangeText(key, value) {
-    this.setState({ [key]: value });
   }
 
   render() {
@@ -80,7 +84,7 @@ class Register extends React.Component {
                         color="#333"
                         size={24}
                       >
-                        Sign Up
+                        Sign In
                       </Text>
                     </Block>
                   </Block>
@@ -88,46 +92,12 @@ class Register extends React.Component {
                     <Block center flex={0.9}>
                       <Block flex space="between">
                         <Block>
-                          <Block
-                            width={width * 0.8}
-                            style={{ marginBottom: 5 }}
-                          >
-                            <Input
-                              placeholder="First Name"
-                              style={styles.inputs}
-                              iconContent={
-                                <Icon
-                                  size={16}
-                                  color="#ADB5BD"
-                                  name="profile-circle"
-                                  family="NowExtra"
-                                  style={styles.inputIcons}
-                                />
-                              }
-                            />
-                          </Block>
-                          <Block
-                            width={width * 0.8}
-                            style={{ marginBottom: 5 }}
-                          >
-                            <Input
-                              placeholder="Last Name"
-                              style={styles.inputs}
-                              iconContent={
-                                <Icon
-                                  size={16}
-                                  color="#ADB5BD"
-                                  name="caps-small2x"
-                                  family="NowExtra"
-                                  style={styles.inputIcons}
-                                />
-                              }
-                            />
-                          </Block>
                           <Block width={width * 0.8}>
                             <Input
                               placeholder="Email"
+                              autoCapitalize="none"
                               style={styles.inputs}
+                              onChangeText={(email) => this.setState({ email })}
                               iconContent={
                                 <Icon
                                   size={16}
@@ -143,11 +113,14 @@ class Register extends React.Component {
                             <Input
                               placeholder="Password"
                               style={styles.inputs}
+                              onChangeText={(password) =>
+                                this.setState({ password })
+                              }
                               iconContent={
                                 <Icon
                                   size={16}
                                   color="#ADB5BD"
-                                  name="email-852x"
+                                  name="lock-circle-open2x"
                                   family="NowExtra"
                                   style={styles.inputIcons}
                                 />
@@ -158,25 +131,9 @@ class Register extends React.Component {
                         <Block center>
                           <Button
                             color="primary"
+                            round
+                            style={styles.createButton}
                             onPress={() => this.handleSubmit()}
-                            round
-                            style={styles.createButton}
-                          >
-                            <Text
-                              style={{ fontFamily: "montserrat-bold" }}
-                              size={14}
-                              color={nowTheme.COLORS.WHITE}
-                            >
-                              Sign Up
-                            </Text>
-                          </Button>
-                        </Block>
-                        <Block center>
-                          <Button
-                            color="primary"
-                            onPress={() => this.handleLogin()}
-                            round
-                            style={styles.createButton}
                           >
                             <Text
                               style={{ fontFamily: "montserrat-bold" }}
@@ -184,6 +141,22 @@ class Register extends React.Component {
                               color={nowTheme.COLORS.WHITE}
                             >
                               Login
+                            </Text>
+                          </Button>
+                        </Block>
+                        <Block center>
+                          <Button
+                            color="primary"
+                            round
+                            style={styles.createButton}
+                            onPress={() => this.handleSignUp()}
+                          >
+                            <Text
+                              style={{ fontFamily: "montserrat-bold" }}
+                              size={14}
+                              color={nowTheme.COLORS.WHITE}
+                            >
+                              Sign Up
                             </Text>
                           </Button>
                         </Block>
@@ -278,4 +251,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Register;
+export default Login;

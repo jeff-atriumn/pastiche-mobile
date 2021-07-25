@@ -15,17 +15,23 @@
     "url": "git+https://github.com/creativetimofficial/now-ui-pro-react-native.git"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "~1.15.0",
     "@react-native-community/masked-view": "0.1.10",
+    "@react-native-community/netinfo": "^6.0.0",
     "@react-navigation/bottom-tabs": "^5.5.1",
     "@react-navigation/compat": "^5.1.25",
     "@react-navigation/drawer": "5.12.4",
     "@react-navigation/native": "5.9.3",
     "@react-navigation/stack": "5.14.3",
+    "aws-amplify": "^4.2.1",
+    "aws-amplify-react-native": "^5.0.3",
     "expo": "^42.0.0",
     "expo-app-loading": "^1.0.1",
-    "expo-asset": "~8.3.2",
+    "expo-asset": "~8.3.3",
+    "expo-camera": "~11.2.1",
     "expo-font": "~9.2.1",
     "expo-linear-gradient": "^9.2.0",
+    "expo-secure-store": "~10.2.0",
     "galio-framework": "^0.8.0",
     "prop-types": "^15.7.2",
     "react": "16.13.1",
@@ -36,7 +42,7 @@
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.4.0",
     "react-native-svg": "12.1.1",
-    "expo-camera": "~11.2.1"
+    "react-native-get-random-values": "~1.7.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Image } from "react-native";
 import AppLoading from "expo-app-loading";
 import * as Font from "expo-font";
@@ -12,6 +12,7 @@ enableScreens();
 
 import Screens from "./navigation/Screens";
 import { Images, articles, nowTheme } from "./constants";
+import { AppContext } from "./libs/contextLib";
 
 // cache app images
 const assetImages = [
@@ -43,18 +44,10 @@ function cacheImages(images) {
 
 export default class App extends React.Component {
   state = {
+    isAuthenticated: false,
     isLoadingComplete: false,
     fontLoaded: false,
   };
-
-  // async componentDidMount() {
-  //   Font.loadAsync({
-  //     "montserrat-regular": require("./assets/font/Montserrat-Regular.ttf"),
-  //     "montserrat-bold": require("./assets/font/Montserrat-Bold.ttf")
-  //   });
-
-  //   this.setState({ fontLoaded: true });
-  // }
 
   render() {
     if (!this.state.isLoadingComplete) {
@@ -67,13 +60,15 @@ export default class App extends React.Component {
       );
     } else {
       return (
-        <NavigationContainer>
-          <GalioProvider theme={nowTheme}>
-            <Block flex>
-              <Screens />
-            </Block>
-          </GalioProvider>
-        </NavigationContainer>
+        <AppContext.Provider value={this.state.isAuthenticated}>
+          <NavigationContainer>
+            <GalioProvider theme={nowTheme}>
+              <Block flex>
+                <Screens />
+              </Block>
+            </GalioProvider>
+          </NavigationContainer>
+        </AppContext.Provider>
       );
     }
   }

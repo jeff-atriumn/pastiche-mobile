@@ -9,9 +9,11 @@ import { nowTheme } from "../constants";
 
 // screens
 import Atriumn from "../screens/Atriumn";
+import AuthLoading from "../screens/AuthLoading";
 import Pro from "../screens/Pro";
 import Profile from "../screens/Profile";
 import Register from "../screens/Register";
+import Login from "../screens/Login";
 import Components from "../screens/Components";
 import Articles from "../screens/Articles";
 import Trending from "../screens/Trending";
@@ -549,16 +551,58 @@ function AppStack(props) {
   );
 }
 
+function AuthStack(props) {
+  return (
+    <Stack.Navigator initialRouteName="Profile" mode="card" headerMode="screen">
+      <Stack.Screen
+        name="Register"
+        component={Register}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              transparent
+              white
+              title="Register"
+              navigation={navigation}
+              scene={scene}
+            />
+          ),
+          cardStyle: { backgroundColor: "#FFFFFF" },
+          headerTransparent: true,
+        }}
+      />
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              transparent
+              white
+              title="Login"
+              navigation={navigation}
+              scene={scene}
+            />
+          ),
+          cardStyle: { backgroundColor: "#FFFFFF" },
+          headerTransparent: true,
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
 export default function OnboardingStack(props) {
   return (
     <Stack.Navigator mode="card" headerMode="none">
       <Stack.Screen
-        name="Onboarding"
-        component={Pro}
+        name="AuthLoading"
+        component={AuthLoading}
         option={{
           headerTransparent: true,
         }}
       />
+      <Stack.Screen name="Auth" component={AuthStack} />
       <Stack.Screen name="App" component={AppStack} />
     </Stack.Navigator>
   );
