@@ -14,6 +14,7 @@ import {
   Button as GaButton,
   theme,
 } from "galio-framework";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Button, Icon, Input } from "../components";
 import { Images, nowTheme } from "../constants";
@@ -27,35 +28,31 @@ const DismissKeyboard = ({ children }) => (
   </TouchableWithoutFeedback>
 );
 
-class Register extends React.Component {
-  // state = { isAuthenticated: useAppContext() };
+function validateForm() {
+  return fields.email.length > 0 && fields.password.length > 0;
+}
 
-  handleSubmit = async () => {
-    // const { email, password, name } = this.state;
+class ConfirmSignUp extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { email: "" };
+  }
+
+  handleConfirmationSubmit = async () => {
     this.setState({ isLoading: true });
 
     try {
-      const newUser = await Auth.signUp({
-        username: this.state.email,
-        password: this.state.password,
-      });
-      this.setState({
-        newUser,
-      });
+      await Auth.confirmSignUp(this.state.email, this.state.confirmationCode);
+      await Auth.signIn(this.state.email, this.state.password);
+
+      // this.props.userHasAuthenticated(true);
+      this.props.navigation.navigate("App");
     } catch (e) {
+      console.log(e);
       alert(e.message);
+      this.setState({ isLoading: false });
     }
-
-    this.setState({ isLoading: false });
   };
-
-  handleLogin = async () => {
-    this.props.navigation.navigate("Login");
-  };
-
-  onChangeText(key, value) {
-    this.setState({ [key]: value });
-  }
 
   render() {
     return (
@@ -79,7 +76,7 @@ class Register extends React.Component {
                         color="#333"
                         size={24}
                       >
-                        Sign Up
+                        Confirm
                       </Text>
                     </Block>
                   </Block>
@@ -87,61 +84,12 @@ class Register extends React.Component {
                     <Block center flex={0.9}>
                       <Block flex space="between">
                         <Block>
-                          <Block
-                            width={width * 0.8}
-                            style={{ marginBottom: 5 }}
-                          >
-                            <Input
-                              placeholder="First Name"
-                              style={styles.inputs}
-                              iconContent={
-                                <Icon
-                                  size={16}
-                                  color="#ADB5BD"
-                                  name="profile-circle"
-                                  family="NowExtra"
-                                  style={styles.inputIcons}
-                                />
-                              }
-                            />
-                          </Block>
-                          <Block
-                            width={width * 0.8}
-                            style={{ marginBottom: 5 }}
-                          >
-                            <Input
-                              placeholder="Last Name"
-                              style={styles.inputs}
-                              iconContent={
-                                <Icon
-                                  size={16}
-                                  color="#ADB5BD"
-                                  name="caps-small2x"
-                                  family="NowExtra"
-                                  style={styles.inputIcons}
-                                />
-                              }
-                            />
-                          </Block>
                           <Block width={width * 0.8}>
                             <Input
-                              placeholder="Email"
+                              placeholder="Confirmation Code"
+                              autoCapitalize="none"
                               style={styles.inputs}
-                              iconContent={
-                                <Icon
-                                  size={16}
-                                  color="#ADB5BD"
-                                  name="email-852x"
-                                  family="NowExtra"
-                                  style={styles.inputIcons}
-                                />
-                              }
-                            />
-                          </Block>
-                          <Block width={width * 0.8}>
-                            <Input
-                              placeholder="Password"
-                              style={styles.inputs}
+                              onChangeText={(email) => this.setState({ email })}
                               iconContent={
                                 <Icon
                                   size={16}
@@ -157,32 +105,16 @@ class Register extends React.Component {
                         <Block center>
                           <Button
                             color="primary"
+                            round
+                            style={styles.createButton}
                             onPress={() => this.handleSubmit()}
-                            round
-                            style={styles.createButton}
                           >
                             <Text
                               style={{ fontFamily: "montserrat-bold" }}
                               size={14}
                               color={nowTheme.COLORS.WHITE}
                             >
-                              Send Confirmation
-                            </Text>
-                          </Button>
-                        </Block>
-                        <Block center>
-                          <Button
-                            color="primary"
-                            onPress={() => this.handleLogin()}
-                            round
-                            style={styles.createButton}
-                          >
-                            <Text
-                              style={{ fontFamily: "montserrat-bold" }}
-                              size={14}
-                              color={nowTheme.COLORS.WHITE}
-                            >
-                              Login
+                              Confirm
                             </Text>
                           </Button>
                         </Block>
@@ -277,4 +209,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Register;
+export default ConfirmSignUp;

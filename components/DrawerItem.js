@@ -20,6 +20,26 @@ class DrawerItem extends React.Component {
             style={{ opacity: 0.5 }}
           />
         );
+      case "My Portraits":
+        return (
+          <Icon
+            name="album"
+            family="NowExtra"
+            size={18}
+            color={focused ? nowTheme.COLORS.PRIMARY : "white"}
+            style={{ opacity: 0.5 }}
+          />
+        );
+      case "Featured":
+        return (
+          <Icon
+            name="bookmark-22x"
+            family="NowExtra"
+            size={18}
+            color={focused ? nowTheme.COLORS.PRIMARY : "white"}
+            style={{ opacity: 0.5 }}
+          />
+        );
       case "Components":
         return (
           <Icon

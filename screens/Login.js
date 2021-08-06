@@ -54,7 +54,7 @@ class Login extends React.Component {
           AsyncStorage.setItem("userToken", user.username);
           AsyncStorage.setItem("userEmail", email);
           this.setState({ isAuthenticated: true });
-          this.props.navigation.navigate("Profile");
+          this.props.navigation.navigate("Atriumn");
         })
         .catch((err) => alert(err.message));
     } else {
