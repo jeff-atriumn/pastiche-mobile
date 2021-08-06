@@ -8,7 +8,7 @@ import { Icon } from "../components";
 import { nowTheme } from "../constants";
 
 // screens
-import Atriumn from "../screens/Atriumn";
+import Pastiche from "../screens/Pastiche";
 import AuthLoading from "../screens/AuthLoading";
 import Pro from "../screens/Pro";
 import Profile from "../screens/Profile";
@@ -279,16 +279,20 @@ function ProfileStack(props) {
   );
 }
 
-function AtriumnStack(props) {
+function PasticheStack(props) {
   return (
-    <Stack.Navigator mode="card" headerMode="screen" initialRouteName="Atriumn">
+    <Stack.Navigator
+      mode="card"
+      headerMode="screen"
+      initialRouteName="Pastiche"
+    >
       <Stack.Screen
-        name="Atriumn"
-        component={Atriumn}
+        name="Pastiche"
+        component={Pastiche}
         options={{
           header: ({ navigation, scene }) => (
             <Header
-              title="Atriumn"
+              title="Pastiche"
               // search
               // options
               navigation={navigation}
@@ -456,9 +460,9 @@ function AppStack(props) {
           fontWeight: "normal",
         },
       }}
-      initialRouteName="Atriumn"
+      initialRouteName="Pastiche"
     >
-      <Drawer.Screen name="Atriumn" component={AtriumnStack} />
+      <Drawer.Screen name="Pastiche" component={PasticheStack} />
       <Drawer.Screen name="Profile" component={ProfileStack} />
       <Drawer.Screen name="Settings" component={SettingsStack} />
     </Drawer.Navigator>

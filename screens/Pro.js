@@ -33,7 +33,7 @@ class Pro extends React.Component {
             <Block center style={styles.title}>
               <Block>
                 <Text color="white" size={60} style={styles.font}>
-                  Atriumn
+                  Pastiche
                 </Text>
               </Block>
             </Block>

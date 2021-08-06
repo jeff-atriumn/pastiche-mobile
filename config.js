@@ -3,7 +3,7 @@ export default {
   aws_appsync_authenticationType: "AMAZON_COGNITO_USER_POOLS",
   s3: {
     REGION: "us-east-2",
-    BUCKET: "atriumn-upload",
+    BUCKET: "pastiche-upload",
   },
   apiGateway: {
     REGION: "us-east-2",

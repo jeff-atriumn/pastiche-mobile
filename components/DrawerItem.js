@@ -10,7 +10,7 @@ class DrawerItem extends React.Component {
     const { title, focused } = this.props;
 
     switch (title) {
-      case "Atriumn":
+      case "Pastiche":
         return (
           <Icon
             name="camera-compact2x"

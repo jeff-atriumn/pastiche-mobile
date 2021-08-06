@@ -12,7 +12,7 @@ import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const CAPTURE_SIZE = Math.floor(WINDOW_HEIGHT * 0.08);
 
-export default function Atriumn() {
+export default function Pastiche() {
   const cameraRef = useRef();
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraType, setCameraType] = useState(Camera.Constants.Type.back);

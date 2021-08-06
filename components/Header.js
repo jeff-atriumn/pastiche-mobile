@@ -82,7 +82,7 @@ class Header extends React.Component {
     }
 
     switch (title) {
-      case "Atriumn":
+      case "Pastiche":
         return [
           // <BellButton
           //   key="chat-home"

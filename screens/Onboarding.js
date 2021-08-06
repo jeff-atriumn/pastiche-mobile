@@ -52,7 +52,7 @@ export default class Onboarding extends React.Component {
                     color="white"
                     size={40}
                   >
-                    ATRIUMN
+                    PASTICHE
                   </Text>
                 </Block>
               </Block>
