@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Camera } from "expo-camera";
+import { LinearGradient } from "expo-linear-gradient";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
@@ -95,14 +96,22 @@ export default function Pastiche() {
   }
 
   return (
-    <View style={styles.container}>
-      <Camera
-        ref={cameraRef}
-        style={styles.container}
-        type={cameraType}
-        onCameraReady={onCameraReady}
-        useCamera2Api={true}
-      />
+    <LinearGradient
+      colors={["seagreen", "grey"]}
+      style={{ flex: 1 }}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+      style={[styles.container, styles.linear]}
+    >
+      <View style={styles.square}>
+        <Camera
+          ref={cameraRef}
+          style={[styles.camera]}
+          type={cameraType}
+          onCameraReady={onCameraReady}
+          useCamera2Api={true}
+        />
+      </View>
       <View style={styles.container}>
         {isPreview && (
           <TouchableOpacity
@@ -127,13 +136,32 @@ export default function Pastiche() {
           </View>
         )}
       </View>
-    </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
+  },
+  linear: {
+    backgroundColor: "green",
+  },
+  square: {
+    flex: 1,
+    paddingBottom: 75,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  camera: {
+    height: Dimensions.get("window").width * 0.95,
+    width: Dimensions.get("window").width * 0.95,
+    borderRadius: 5,
+    shadowColor: "rgba(0, 0, 0, 0.5)",
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 4,
+    shadowOpacity: 1,
   },
   text: {
     color: "#fff",

@@ -35,7 +35,6 @@ export default class AuthLoading extends React.Component {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color="#fff" />
-        <Text>HI HI HI HI</Text>
       </View>
     );
   }
