@@ -141,7 +141,7 @@ class DrawerItem extends React.Component {
             ? Linking.openURL(
                 "https://demos.creative-tim.com/now-ui-pro-react-native/docs/"
               ).catch((err) => console.error("An error occurred", err))
-            : navigation.navigate(title == "LOGOUT" ? "Onboarding" : title)
+            : navigation.navigate(title == "LOGOUT" ? "Auth" : title)
         }
       >
         <Block flex row style={containerStyles}>

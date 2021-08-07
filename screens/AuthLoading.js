@@ -24,11 +24,9 @@ export default class AuthLoading extends React.Component {
         });
       })
       .then((data) => {
-        console.log("going to app");
         this.props.navigation.navigate("App");
       })
       .catch((err) => {
-        console.log("going to auth");
         this.props.navigation.navigate("Auth");
       });
   };
