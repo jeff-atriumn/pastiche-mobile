@@ -29,6 +29,18 @@ const DismissKeyboard = ({ children }) => (
 
 class Register extends React.Component {
   // state = { isAuthenticated: useAppContext() };
+  constructor(props) {
+    super(props);
+    this.state = {
+      given_name: "",
+      family_name: "",
+      email: "",
+      password: "",
+      confirmationCode: "",
+      // modalVisible: false,
+      // isAuthenticated: false,
+    };
+  }
 
   handleSubmit = async () => {
     // const { email, password, name } = this.state;
@@ -38,6 +50,10 @@ class Register extends React.Component {
       const newUser = await Auth.signUp({
         username: this.state.email,
         password: this.state.password,
+        attributes: {
+          given_name: this.state.given_name,
+          family_name: this.state.family_name,
+        },
       });
       this.setState({
         newUser,
@@ -47,6 +63,10 @@ class Register extends React.Component {
     }
 
     this.setState({ isLoading: false });
+    this.props.navigation.navigate("ConfirmSignUp", {
+      email: this.state.email,
+      password: this.state.password,
+    });
   };
 
   handleLogin = async () => {
@@ -103,6 +123,9 @@ class Register extends React.Component {
                                   style={styles.inputIcons}
                                 />
                               }
+                              onChangeText={(value) =>
+                                this.onChangeText("given_name", value)
+                              }
                             />
                           </Block>
                           <Block
@@ -121,11 +144,15 @@ class Register extends React.Component {
                                   style={styles.inputIcons}
                                 />
                               }
+                              onChangeText={(value) =>
+                                this.onChangeText("family_name", value)
+                              }
                             />
                           </Block>
                           <Block width={width * 0.8}>
                             <Input
                               placeholder="Email"
+                              autoCapitalize="none"
                               style={styles.inputs}
                               iconContent={
                                 <Icon
@@ -136,20 +163,27 @@ class Register extends React.Component {
                                   style={styles.inputIcons}
                                 />
                               }
+                              onChangeText={(value) =>
+                                this.onChangeText("email", value)
+                              }
                             />
                           </Block>
                           <Block width={width * 0.8}>
                             <Input
                               placeholder="Password"
+                              secureTextEntry={true}
                               style={styles.inputs}
                               iconContent={
                                 <Icon
                                   size={16}
                                   color="#ADB5BD"
-                                  name="email-852x"
+                                  name="lock-circle-open2x"
                                   family="NowExtra"
                                   style={styles.inputIcons}
                                 />
+                              }
+                              onChangeText={(value) =>
+                                this.onChangeText("password", value)
                               }
                             />
                           </Block>

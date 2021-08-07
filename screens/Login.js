@@ -54,7 +54,7 @@ class Login extends React.Component {
           AsyncStorage.setItem("userToken", user.username);
           AsyncStorage.setItem("userEmail", email);
           this.setState({ isAuthenticated: true });
-          this.props.navigation.navigate("Pastiche");
+          this.props.navigation.navigate("App");
         })
         .catch((err) => alert(err.message));
     } else {
@@ -113,6 +113,7 @@ class Login extends React.Component {
                             <Input
                               placeholder="Password"
                               style={styles.inputs}
+                              secureTextEntry={true}
                               onChangeText={(password) =>
                                 this.setState({ password })
                               }

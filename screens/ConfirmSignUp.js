@@ -35,20 +35,25 @@ function validateForm() {
 class ConfirmSignUp extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { email: "" };
+    this.state = {
+      code: "",
+      email: this.props.route.params.email,
+      password: this.props.route.params.password,
+    };
+  }
+
+  onChangeText(key, value) {
+    this.setState({ [key]: value });
   }
 
   handleConfirmationSubmit = async () => {
     this.setState({ isLoading: true });
-
     try {
-      await Auth.confirmSignUp(this.state.email, this.state.confirmationCode);
+      await Auth.confirmSignUp(this.state.email, this.state.code);
       await Auth.signIn(this.state.email, this.state.password);
 
-      // this.props.userHasAuthenticated(true);
       this.props.navigation.navigate("App");
     } catch (e) {
-      console.log(e);
       alert(e.message);
       this.setState({ isLoading: false });
     }
@@ -89,15 +94,17 @@ class ConfirmSignUp extends React.Component {
                               placeholder="Confirmation Code"
                               autoCapitalize="none"
                               style={styles.inputs}
-                              onChangeText={(email) => this.setState({ email })}
                               iconContent={
                                 <Icon
                                   size={16}
                                   color="#ADB5BD"
-                                  name="email-852x"
+                                  name="lock-circle-open2x"
                                   family="NowExtra"
                                   style={styles.inputIcons}
                                 />
+                              }
+                              onChangeText={(value) =>
+                                this.onChangeText("code", value)
                               }
                             />
                           </Block>
@@ -107,7 +114,7 @@ class ConfirmSignUp extends React.Component {
                             color="primary"
                             round
                             style={styles.createButton}
-                            onPress={() => this.handleSubmit()}
+                            onPress={() => this.handleConfirmationSubmit()}
                           >
                             <Text
                               style={{ fontFamily: "montserrat-bold" }}
