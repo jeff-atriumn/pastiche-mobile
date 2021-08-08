@@ -45,9 +45,6 @@ class Login extends React.Component {
   handleSubmit() {
     const { email, password } = this.state;
 
-    console.log(email);
-    console.log(this.state);
-
     if (email) {
       Auth.signIn(email, password)
         .then((user) => {

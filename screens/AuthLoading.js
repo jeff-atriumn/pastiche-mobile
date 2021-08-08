@@ -1,12 +1,7 @@
 import React from "react";
-import {
-  StyleSheet,
-  View,
-  AsyncStorage,
-  Text,
-  ActivityIndicator,
-} from "react-native";
+import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from "expo-secure-store";
 
 import { Auth } from "aws-amplify";
@@ -19,6 +14,7 @@ export default class AuthLoading extends React.Component {
   loadApp = async () => {
     await Auth.currentAuthenticatedUser()
       .then((user) => {
+        AsyncStorage.clear();
         this.setState({
           userToken: user.signInUserSession.accessToken.jwtToken,
         });

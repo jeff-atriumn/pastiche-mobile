@@ -9,6 +9,7 @@ import {
 import { Camera } from "expo-camera";
 import { LinearGradient } from "expo-linear-gradient";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+import { s3Upload } from "../libs/awsLib";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const CAPTURE_SIZE = Math.floor(WINDOW_HEIGHT * 0.08);
@@ -18,7 +19,9 @@ export default function Pastiche() {
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraType, setCameraType] = useState(Camera.Constants.Type.back);
   const [isPreview, setIsPreview] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [isCameraReady, setIsCameraReady] = useState(false);
+  const [photoData, setPhotoData] = useState(null);
 
   useEffect(() => {
     onHandlePermission();
@@ -52,6 +55,7 @@ export default function Pastiche() {
 
       if (source) {
         await cameraRef.current.pausePreview();
+        setPhotoData(data);
         setIsPreview(true);
 
         // let base64Img = `data:image/jpg;base64,${source}`;
@@ -88,6 +92,15 @@ export default function Pastiche() {
     setIsPreview(false);
   };
 
+  const upload = async () => {
+    setIsUploading(true);
+
+    const photoUrl = photoData.base64 ? await s3Upload(photoData.base64) : null;
+
+    setIsPreview(false);
+    setIsUploading(false);
+  };
+
   if (hasPermission === null) {
     return <View />;
   }
@@ -114,13 +127,22 @@ export default function Pastiche() {
       </View>
       <View style={styles.container}>
         {isPreview && (
-          <TouchableOpacity
-            onPress={cancelPreview}
-            style={styles.closeButton}
-            activeOpacity={0.7}
-          >
-            <AntDesign name="close" size={32} color="#fff" />
-          </TouchableOpacity>
+          <View>
+            <TouchableOpacity
+              onPress={cancelPreview}
+              style={styles.closeButton}
+              activeOpacity={0.7}
+            >
+              <AntDesign name="close" size={32} color="#fff" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={upload}
+              style={styles.uploadButton}
+              activeOpacity={0.7}
+            >
+              <AntDesign name="arrowup" size={32} color="#fff" />
+            </TouchableOpacity>
+          </View>
         )}
         {!isPreview && (
           <View style={styles.bottomButtonsContainer}>
@@ -184,6 +206,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#5A45FF",
+    opacity: 0.7,
+  },
+  uploadButton: {
+    position: "absolute",
+    top: 95,
+    right: 20,
+    height: 50,
+    width: 50,
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "tomato",
     opacity: 0.7,
   },
   capture: {
