@@ -10,6 +10,7 @@ import { Camera } from "expo-camera";
 import { LinearGradient } from "expo-linear-gradient";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { s3Upload } from "../libs/awsLib";
+import { API } from "aws-amplify";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const CAPTURE_SIZE = Math.floor(WINDOW_HEIGHT * 0.08);
@@ -55,7 +56,14 @@ export default function Pastiche() {
 
       if (source) {
         await cameraRef.current.pausePreview();
-        setPhotoData(data);
+        setPhotoData({
+          image: "test portrait",
+          lat: 50,
+          long: 22,
+          alt: 77,
+          overlayId: "test overlay",
+        });
+        // setPhotoData({ photo: data });
         setIsPreview(true);
 
         // let base64Img = `data:image/jpg;base64,${source}`;
@@ -87,6 +95,18 @@ export default function Pastiche() {
     }
   };
 
+  const createPortrait = async () => {
+    return API.post("portraits", `/portraits`, {
+      body: photoData,
+    })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
+  };
+
   const cancelPreview = async () => {
     await cameraRef.current.resumePreview();
     setIsPreview(false);
@@ -95,7 +115,17 @@ export default function Pastiche() {
   const upload = async () => {
     setIsUploading(true);
 
-    const photoUrl = photoData.base64 ? await s3Upload(photoData.base64) : null;
+    // const photoUrl = photoData.base64 ? await s3Upload(photoData.base64) : null;
+
+    // createPortrait();
+
+    createPortrait({
+      portrait: "test-pastiche.jpg",
+      overlayId: "SLJGHSJFHDSJjhFSDF",
+      lat: 50,
+      long: 75,
+      alt: 200,
+    });
 
     setIsPreview(false);
     setIsUploading(false);
