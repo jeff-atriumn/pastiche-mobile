@@ -14,7 +14,6 @@ export default class AuthLoading extends React.Component {
   loadApp = async () => {
     await Auth.currentAuthenticatedUser()
       .then((user) => {
-        AsyncStorage.clear();
         this.setState({
           userToken: user.signInUserSession.accessToken.jwtToken,
         });

@@ -10,7 +10,9 @@ import { Camera } from "expo-camera";
 import { LinearGradient } from "expo-linear-gradient";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { s3Upload } from "../libs/awsLib";
-import { API } from "aws-amplify";
+import { API, Storage } from "aws-amplify";
+
+import config from "../config.js";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const CAPTURE_SIZE = Math.floor(WINDOW_HEIGHT * 0.08);
@@ -62,6 +64,7 @@ export default function Pastiche() {
           long: 22,
           alt: 77,
           overlayId: "test overlay",
+          source: source,
         });
         // setPhotoData({ photo: data });
         setIsPreview(true);
@@ -115,19 +118,23 @@ export default function Pastiche() {
   const upload = async () => {
     setIsUploading(true);
 
-    // const photoUrl = photoData.base64 ? await s3Upload(photoData.base64) : null;
+    console.log("before upload");
+    console.log([photoData]);
+    const photoUrl = photoData.source ? await s3Upload(photoData.source) : null;
+    console.log("after upload");
 
-    // createPortrait();
+    createPortrait();
 
-    createPortrait({
-      portrait: "test-pastiche.jpg",
-      overlayId: "SLJGHSJFHDSJjhFSDF",
-      lat: 50,
-      long: 75,
-      alt: 200,
-    });
+    // createPortrait({
+    //   portrait: "test-pastiche.jpg",
+    //   overlayId: "SLJGHSJFHDSJjhFSDF",
+    //   lat: 50,
+    //   long: 75,
+    //   alt: 200,
+    // });
 
     setIsPreview(false);
+    setIsCameraReady(true);
     setIsUploading(false);
   };
 
