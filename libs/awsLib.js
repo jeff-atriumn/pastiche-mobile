@@ -2,7 +2,6 @@ import { Storage } from "aws-amplify";
 global.Buffer = global.Buffer || require("buffer").Buffer;
 
 export async function s3Upload(file) {
-  console.log("in upload - before put");
   try {
     const filename = `${Date.now()}-pastiche.jpg`;
 

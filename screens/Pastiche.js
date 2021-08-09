@@ -3,8 +3,10 @@ import {
   StyleSheet,
   Dimensions,
   View,
+  Image,
   Text,
   TouchableOpacity,
+  ImageBackground,
 } from "react-native";
 import { Camera } from "expo-camera";
 import { LinearGradient } from "expo-linear-gradient";
@@ -52,7 +54,7 @@ export default function Pastiche() {
 
   const onSnap = async () => {
     if (cameraRef.current) {
-      const options = { quality: 0.7, base64: true };
+      const options = { quality: 1.0, base64: true };
       const data = await cameraRef.current.takePictureAsync(options);
       const source = data.base64;
 
@@ -66,34 +68,7 @@ export default function Pastiche() {
           overlayId: "test overlay",
           source: source,
         });
-        // setPhotoData({ photo: data });
         setIsPreview(true);
-
-        // let base64Img = `data:image/jpg;base64,${source}`;
-        // let apiUrl =
-        //   "https://api.cloudinary.com/v1_1/<your-cloud-name>/image/upload";
-        // let data = {
-        //   file: base64Img,
-        //   upload_preset: "<your-upload-preset>",
-        // };
-
-        // fetch(apiUrl, {
-        //   body: JSON.stringify(data),
-        //   headers: {
-        //     "content-type": "application/json",
-        //   },
-        //   method: "POST",
-        // })
-        //   .then(async (response) => {
-        //     let data = await response.json();
-        //     if (data.secure_url) {
-        //       alert("Upload successful");
-        //     }
-        //   })
-        //   .catch((err) => {
-        //     alert("Cannot upload");
-        //     console.log(err);
-        //   });
       }
     }
   };
@@ -118,24 +93,19 @@ export default function Pastiche() {
   const upload = async () => {
     setIsUploading(true);
 
-    console.log("before upload");
-    console.log([photoData]);
-    const photoUrl = photoData.source ? await s3Upload(photoData.source) : null;
-    console.log("after upload");
+    const photoUrl = await s3Upload(photoData.source);
+
+    setPhotoData({
+      url: photoUrl,
+    });
 
     createPortrait();
-
-    // createPortrait({
-    //   portrait: "test-pastiche.jpg",
-    //   overlayId: "SLJGHSJFHDSJjhFSDF",
-    //   lat: 50,
-    //   long: 75,
-    //   alt: 200,
-    // });
 
     setIsPreview(false);
     setIsCameraReady(true);
     setIsUploading(false);
+
+    await cameraRef.current.resumePreview();
   };
 
   if (hasPermission === null) {
@@ -160,7 +130,17 @@ export default function Pastiche() {
           type={cameraType}
           onCameraReady={onCameraReady}
           useCamera2Api={true}
-        />
+        >
+          <Image
+            style={{
+              width: 250,
+              height: 250,
+            }}
+            source={{
+              uri: "https://docs.google.com/drawings/d/e/2PACX-1vSSH3muIl9hMUbIfhhbLbd_AvCEC2EaQWnvS5-MEL2GqkYRoMmikHtXDyq6054nGTjnyCAsUbSkualf/pub?w=960&amp;h=720",
+            }}
+          />
+        </Camera>
       </View>
       <View style={styles.container}>
         {isPreview && (
