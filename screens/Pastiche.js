@@ -15,6 +15,7 @@ import { s3Upload } from "../libs/awsLib";
 import { API, Storage } from "aws-amplify";
 
 import config from "../config.js";
+import { log } from "react-native-reanimated";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const CAPTURE_SIZE = Math.floor(WINDOW_HEIGHT * 0.08);
@@ -61,12 +62,12 @@ export default function Pastiche() {
       if (source) {
         await cameraRef.current.pausePreview();
         setPhotoData({
-          image: "test portrait",
           lat: 50,
           long: 22,
           alt: 77,
           overlayId: "test overlay",
           source: source,
+          image: "hi",
         });
         setIsPreview(true);
       }
@@ -74,15 +75,12 @@ export default function Pastiche() {
   };
 
   const createPortrait = async () => {
+    console.log(photoData.image);
     return API.post("portraits", `/portraits`, {
       body: photoData,
-    })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error.response);
-      });
+    }).catch((error) => {
+      console.log(error.response);
+    });
   };
 
   const cancelPreview = async () => {
@@ -93,13 +91,34 @@ export default function Pastiche() {
   const upload = async () => {
     setIsUploading(true);
 
-    const photoUrl = await s3Upload(photoData.source);
+    const photoUrl = photoData.source ? await s3Upload(photoData.source) : null;
 
-    setPhotoData({
-      url: photoUrl,
+    // setPhotoData((prevState) => ({
+    //   ...prevState,
+    //   image: photoUrl,
+    // }));
+
+    // setPhotoData((prevState) => ({
+    //   ...prevState,
+    //   image: photoUrl,
+    // }));
+
+    portrait = {
+      lat: photoData.lat,
+      long: photoData.long,
+      alt: photoData.alt,
+      overlayId: photoData.overlayId,
+      source: photoData.source,
+      image: photoUrl,
+    };
+
+    API.post("portraits", `/portraits`, {
+      body: portrait,
+    }).catch((error) => {
+      console.log(error.response);
     });
 
-    createPortrait();
+    // createPortrait();
 
     setIsPreview(false);
     setIsCameraReady(true);
@@ -133,7 +152,7 @@ export default function Pastiche() {
         >
           <Image
             style={{
-              width: 250,
+              width: 350,
               height: 250,
             }}
             source={{
@@ -201,6 +220,9 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
     shadowRadius: 4,
     shadowOpacity: 1,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   },
   text: {
     color: "#fff",
