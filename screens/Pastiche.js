@@ -9,6 +9,7 @@ import {
   ImageBackground,
 } from "react-native";
 import { Camera } from "expo-camera";
+import AnimatedLoader from "react-native-animated-loader";
 import { LinearGradient } from "expo-linear-gradient";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { s3Upload } from "../libs/awsLib";
@@ -27,6 +28,7 @@ export default function Pastiche() {
   const [isPreview, setIsPreview] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isCameraReady, setIsCameraReady] = useState(false);
+  const [isSnapping, setIsSnapping] = useState(false);
   const [photoData, setPhotoData] = useState(null);
 
   useEffect(() => {
@@ -74,14 +76,14 @@ export default function Pastiche() {
     }
   };
 
-  const createPortrait = async () => {
-    console.log(photoData.image);
-    return API.post("portraits", `/portraits`, {
-      body: photoData,
-    }).catch((error) => {
-      console.log(error.response);
-    });
-  };
+  // const createPortrait = async () => {
+  //   console.log(photoData.image);
+  //   return API.post("portraits", `/portraits`, {
+  //     body: photoData,
+  //   }).catch((error) => {
+  //     console.log(error.response);
+  //   });
+  // };
 
   const cancelPreview = async () => {
     await cameraRef.current.resumePreview();
@@ -180,6 +182,17 @@ export default function Pastiche() {
             </TouchableOpacity>
           </View>
         )}
+        {isUploading && (
+          <AnimatedLoader
+            visible={true}
+            overlayColor="rgba(255,255,255,0.75)"
+            source={require("../assets/60041-upload.json")}
+            animationStyle={styles.lottie}
+            speed={1}
+          >
+            <Text>Doing something...</Text>
+          </AnimatedLoader>
+        )}
         {!isPreview && (
           <View style={styles.bottomButtonsContainer}>
             <TouchableOpacity disabled={!isCameraReady} onPress={switchCamera}>
@@ -204,6 +217,10 @@ const styles = StyleSheet.create({
   },
   linear: {
     backgroundColor: "green",
+  },
+  lottie: {
+    width: 100,
+    height: 100,
   },
   square: {
     flex: 1,
