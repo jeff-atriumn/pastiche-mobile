@@ -15,9 +15,6 @@ import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { s3Upload } from "../libs/awsLib";
 import { API, Storage } from "aws-amplify";
 
-import config from "../config.js";
-import { log } from "react-native-reanimated";
-
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const CAPTURE_SIZE = Math.floor(WINDOW_HEIGHT * 0.08);
 
@@ -28,11 +25,17 @@ export default function Pastiche() {
   const [isPreview, setIsPreview] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isCameraReady, setIsCameraReady] = useState(false);
-  const [isSnapping, setIsSnapping] = useState(false);
   const [photoData, setPhotoData] = useState(null);
+  const [activeOverlays, setActiveOverlays] = useState({});
 
   useEffect(() => {
+    async function getOverlays() {
+      const data = await API.get("overlays", "/overlays");
+      setActiveOverlays({ overlays: data.body, current_overlay: 0 });
+    }
+
     onHandlePermission();
+    getOverlays();
   }, []);
 
   const onHandlePermission = async () => {
@@ -63,27 +66,18 @@ export default function Pastiche() {
 
       if (source) {
         await cameraRef.current.pausePreview();
-        setPhotoData({
-          lat: 50,
-          long: 22,
-          alt: 77,
-          overlayId: "test overlay",
-          source: source,
-          image: "hi",
-        });
+        // setPhotoData({
+        //   lat: 50,
+        //   long: 22,
+        //   alt: 77,
+        //   overlayId: "test overlay",
+        //   source: source,
+        //   image: "hi",
+        // });
         setIsPreview(true);
       }
     }
   };
-
-  // const createPortrait = async () => {
-  //   console.log(photoData.image);
-  //   return API.post("portraits", `/portraits`, {
-  //     body: photoData,
-  //   }).catch((error) => {
-  //     console.log(error.response);
-  //   });
-  // };
 
   const cancelPreview = async () => {
     await cameraRef.current.resumePreview();
@@ -94,16 +88,6 @@ export default function Pastiche() {
     setIsUploading(true);
 
     const photoUrl = photoData.source ? await s3Upload(photoData.source) : null;
-
-    // setPhotoData((prevState) => ({
-    //   ...prevState,
-    //   image: photoUrl,
-    // }));
-
-    // setPhotoData((prevState) => ({
-    //   ...prevState,
-    //   image: photoUrl,
-    // }));
 
     portrait = {
       lat: photoData.lat,
@@ -119,8 +103,6 @@ export default function Pastiche() {
     }).catch((error) => {
       console.log(error.response);
     });
-
-    // createPortrait();
 
     setIsPreview(false);
     setIsCameraReady(true);
@@ -152,15 +134,17 @@ export default function Pastiche() {
           onCameraReady={onCameraReady}
           useCamera2Api={true}
         >
-          <Image
-            style={{
-              width: 350,
-              height: 250,
-            }}
-            source={{
-              uri: "https://docs.google.com/drawings/d/e/2PACX-1vSSH3muIl9hMUbIfhhbLbd_AvCEC2EaQWnvS5-MEL2GqkYRoMmikHtXDyq6054nGTjnyCAsUbSkualf/pub?w=960&amp;h=720",
-            }}
-          />
+          {Object.keys(activeOverlays).length > 0 && (
+            <Image
+              style={{
+                width: 350,
+                height: 250,
+              }}
+              source={{
+                uri: activeOverlays.overlays[0].overlayUrl,
+              }}
+            />
+          )}
         </Camera>
       </View>
       <View style={styles.container}>
