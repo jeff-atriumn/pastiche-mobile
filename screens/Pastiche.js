@@ -27,11 +27,12 @@ export default function Pastiche() {
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [photoData, setPhotoData] = useState(null);
   const [activeOverlays, setActiveOverlays] = useState({});
+  const [currentOverlay, setCurrentOverlay] = useState(0);
 
   useEffect(() => {
     async function getOverlays() {
       const data = await API.get("overlays", "/overlays");
-      setActiveOverlays({ overlays: data.body, current_overlay: 0 });
+      setActiveOverlays({ overlays: data.body });
     }
 
     onHandlePermission();
@@ -66,14 +67,6 @@ export default function Pastiche() {
 
       if (source) {
         await cameraRef.current.pausePreview();
-        // setPhotoData({
-        //   lat: 50,
-        //   long: 22,
-        //   alt: 77,
-        //   overlayId: "test overlay",
-        //   source: source,
-        //   image: "hi",
-        // });
         setIsPreview(true);
       }
     }
@@ -82,6 +75,22 @@ export default function Pastiche() {
   const cancelPreview = async () => {
     await cameraRef.current.resumePreview();
     setIsPreview(false);
+  };
+
+  const previousOverlay = async () => {
+    if (currentOverlay == 0) {
+      setCurrentOverlay(activeOverlays.overlays.length - 1);
+    } else {
+      setCurrentOverlay(currentOverlay - 1);
+    }
+  };
+
+  const nextOverlay = async () => {
+    if (currentOverlay == activeOverlays.overlays.length - 1) {
+      setCurrentOverlay(0);
+    } else {
+      setCurrentOverlay(currentOverlay + 1);
+    }
   };
 
   const upload = async () => {
@@ -141,7 +150,7 @@ export default function Pastiche() {
                 height: 250,
               }}
               source={{
-                uri: activeOverlays.overlays[0].overlayUrl,
+                uri: activeOverlays.overlays[currentOverlay].overlayUrl,
               }}
             />
           )}
@@ -178,16 +187,32 @@ export default function Pastiche() {
           </AnimatedLoader>
         )}
         {!isPreview && (
-          <View style={styles.bottomButtonsContainer}>
-            <TouchableOpacity disabled={!isCameraReady} onPress={switchCamera}>
-              <MaterialIcons name="flip-camera-ios" size={28} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              disabled={!isCameraReady}
-              onPress={onSnap}
-              style={styles.capture}
-            />
+          <View style={styles.container}>
+            <View style={styles.overlayNavContainer}>
+              <TouchableOpacity
+                disabled={!isCameraReady}
+                onPress={previousOverlay}
+              >
+                <AntDesign name="stepbackward" size={32} color="#fff" />
+              </TouchableOpacity>
+              <TouchableOpacity disabled={!isCameraReady} onPress={nextOverlay}>
+                <AntDesign name="stepforward" size={32} color="#fff" />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.bottomButtonsContainer}>
+              <TouchableOpacity
+                disabled={!isCameraReady}
+                onPress={switchCamera}
+              >
+                <MaterialIcons name="flip-camera-ios" size={28} color="white" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                disabled={!isCameraReady}
+                onPress={onSnap}
+                style={styles.capture}
+              />
+            </View>
           </View>
         )}
       </View>
@@ -227,6 +252,14 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "#fff",
+  },
+  overlayNavContainer: {
+    position: "absolute",
+    flexDirection: "row",
+    bottom: 175,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
   bottomButtonsContainer: {
     position: "absolute",
