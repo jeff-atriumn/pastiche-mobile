@@ -11,6 +11,7 @@ import { nowTheme } from "../constants";
 import Pastiche from "../screens/Pastiche";
 import AuthLoading from "../screens/AuthLoading";
 import Pro from "../screens/Pro";
+import Featured from "../screens/Featured";
 import Profile from "../screens/Profile";
 import Register from "../screens/Register";
 import ConfirmSignUp from "../screens/ConfirmSignUp";
@@ -279,6 +280,34 @@ function ProfileStack(props) {
   );
 }
 
+function FeaturedStack(props) {
+  return (
+    <Stack.Navigator
+      initialRouteName="Featured"
+      mode="card"
+      headerMode="screen"
+    >
+      <Stack.Screen
+        name="Featured"
+        component={Featured}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              transparent
+              white
+              title="Featured"
+              navigation={navigation}
+              scene={scene}
+            />
+          ),
+          cardStyle: { backgroundColor: "#FFFFFF" },
+          headerTransparent: true,
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
 function PasticheStack(props) {
   return (
     <Stack.Navigator
@@ -463,6 +492,7 @@ function AppStack(props) {
       initialRouteName="Pastiche"
     >
       <Drawer.Screen name="Pastiche" component={PasticheStack} />
+      <Drawer.Screen name="Featured" component={FeaturedStack} />
       <Drawer.Screen name="Profile" component={ProfileStack} />
       <Drawer.Screen name="Settings" component={SettingsStack} />
     </Drawer.Navigator>

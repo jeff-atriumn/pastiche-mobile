@@ -26,6 +26,7 @@ export default function Pastiche() {
   const [isUploading, setIsUploading] = useState(false);
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [photoData, setPhotoData] = useState(null);
+  const [photoSource, setPhotoSource] = useState(null);
   const [activeOverlays, setActiveOverlays] = useState({});
   const [currentOverlay, setCurrentOverlay] = useState(0);
 
@@ -68,6 +69,14 @@ export default function Pastiche() {
       if (source) {
         await cameraRef.current.pausePreview();
         setIsPreview(true);
+        // setPhotoSource(source);
+        setPhotoData({
+          lat: 50,
+          long: 22,
+          alt: 77,
+          // overlayId: activeOverlays.overlays[0].overlayId,
+          source: source,
+        });
       }
     }
   };
@@ -102,8 +111,7 @@ export default function Pastiche() {
       lat: photoData.lat,
       long: photoData.long,
       alt: photoData.alt,
-      overlayId: photoData.overlayId,
-      source: photoData.source,
+      overlayId: activeOverlays.overlays[0].overlayId,
       image: photoUrl,
     };
 
@@ -159,6 +167,15 @@ export default function Pastiche() {
       <View style={styles.container}>
         {isPreview && (
           <View>
+            <Image
+              style={{
+                width: 350,
+                height: 250,
+              }}
+              source={{
+                uri: activeOverlays.overlays[currentOverlay].overlayUrl,
+              }}
+            />
             <TouchableOpacity
               onPress={cancelPreview}
               style={styles.closeButton}

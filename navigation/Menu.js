@@ -87,20 +87,6 @@ function CustomDrawerContent({
   );
 }
 
-/*
-<TouchableOpacity onPress={() => props.navigation.navigate('Onboarding')}
-          style={{ marginLeft: 10, fontFamily: 'montserrat-regular' }}
-        >
-          <DrawerItem {...props} title="SIGN UP" />
-        </TouchableOpacity>
-
-<TouchableOpacity onPress={() => props.navigation.navigate('Onboarding')}
-      style={{ marginLeft: 10, fontFamily: 'montserrat-regular' }}
-    >
-      <DrawerItem {...props} title="LOGOUT" navigation={navigation} />
-    </TouchableOpacity>
-*/
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
