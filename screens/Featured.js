@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Dimensions,
@@ -13,12 +13,24 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Button } from "../components";
 import { Images, nowTheme } from "../constants";
 import { HeaderHeight } from "../constants/utils";
+import { API, Storage } from "aws-amplify";
 
 const { width, height } = Dimensions.get("screen");
 
 const thumbMeasure = (width - 48 - 32) / 3;
 
-const Featured = () => {
+export default function Featured() {
+  const [activeOverlays, setActiveOverlays] = useState({});
+
+  useEffect(() => {
+    async function getOverlays() {
+      const data = await API.get("overlays", "/overlays");
+      setActiveOverlays({ overlays: data.body });
+    }
+
+    getOverlays();
+  }, []);
+
   return (
     <LinearGradient
       colors={["indigo", "grey"]}
@@ -49,14 +61,15 @@ const Featured = () => {
                 }}
               >
                 <Block row space="between" style={{ flexWrap: "wrap" }}>
-                  {Images.Viewed.map((img, imgIndex) => (
-                    <Image
-                      source={img}
-                      key={`viewed-${img}`}
-                      resizeMode="cover"
-                      style={styles.thumb}
-                    />
-                  ))}
+                  {Object.keys(activeOverlays).length > 0 &&
+                    activeOverlays.overlays.map((img, imgIndex) => (
+                      <Image
+                        source={{ uri: img.overlayUrl }}
+                        key={`viewed-${img.overlayUrl}`}
+                        resizeMode="cover"
+                        style={styles.thumb}
+                      />
+                    ))}
                 </Block>
               </Block>
             </Block>
@@ -65,7 +78,7 @@ const Featured = () => {
       </Block>
     </LinearGradient>
   );
-};
+}
 
 const styles = StyleSheet.create({
   profileContainer: {
@@ -98,6 +111,8 @@ const styles = StyleSheet.create({
   },
   thumb: {
     borderRadius: 4,
+    borderColor: "white",
+    borderWidth: 0.5,
     marginVertical: 4,
     alignSelf: "center",
     width: thumbMeasure,
@@ -113,4 +128,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Featured;
+// export default Featured;

@@ -13,7 +13,7 @@ import AnimatedLoader from "react-native-animated-loader";
 import { LinearGradient } from "expo-linear-gradient";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { s3Upload } from "../libs/awsLib";
-import { API, Storage } from "aws-amplify";
+import { API } from "aws-amplify";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const CAPTURE_SIZE = Math.floor(WINDOW_HEIGHT * 0.08);
