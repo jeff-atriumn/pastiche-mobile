@@ -12,6 +12,8 @@ import { Camera } from "expo-camera";
 import AnimatedLoader from "react-native-animated-loader";
 import { LinearGradient } from "expo-linear-gradient";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+import * as Location from "expo-location";
+
 import { s3Upload } from "../libs/awsLib";
 import { API } from "aws-amplify";
 
@@ -29,6 +31,11 @@ export default function Pastiche() {
   const [photoSource, setPhotoSource] = useState(null);
   const [activeOverlays, setActiveOverlays] = useState({});
   const [currentOverlay, setCurrentOverlay] = useState(0);
+  const [zoomValue, setZoomValue] = useState(0);
+  const [locationServiceEnabled, setLocationServiceEnabled] = useState(false);
+  const [displayCurrentAddress, setDisplayCurrentAddress] = useState(
+    "Wait, we are fetching you location..."
+  );
 
   useEffect(() => {
     async function getOverlays() {
@@ -37,8 +44,54 @@ export default function Pastiche() {
     }
 
     onHandlePermission();
+    checkIfLocationEnabled();
     getOverlays();
   }, []);
+
+  const checkIfLocationEnabled = async () => {
+    let enabled = await Location.hasServicesEnabledAsync();
+
+    if (!enabled) {
+      Alert.alert(
+        "Location Service not enabled",
+        "Please enable your location services to continue",
+        [{ text: "OK" }],
+        { cancelable: false }
+      );
+    } else {
+      setLocationServiceEnabled(enabled);
+    }
+  };
+
+  const getCurrentLocation = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+
+    if (status !== "granted") {
+      Alert.alert(
+        "Permission not granted",
+        "Allow the app to use location service.",
+        [{ text: "OK" }],
+        { cancelable: false }
+      );
+    }
+
+    let { coords } = await Location.getCurrentPositionAsync();
+
+    if (coords) {
+      const { latitude, longitude } = coords;
+      let response = await Location.reverseGeocodeAsync({
+        latitude,
+        longitude,
+      });
+
+      for (let item of response) {
+        let address = `${item.city}, ${item.region}, ${item.country}`;
+
+        console.log(address);
+        setDisplayCurrentAddress(address);
+      }
+    }
+  };
 
   const onHandlePermission = async () => {
     const { status } = await Camera.requestPermissionsAsync();
@@ -65,6 +118,7 @@ export default function Pastiche() {
       const options = { quality: 1.0, base64: true };
       const data = await cameraRef.current.takePictureAsync(options);
       const source = data.base64;
+      getCurrentLocation();
 
       if (source) {
         await cameraRef.current.pausePreview();
@@ -84,6 +138,18 @@ export default function Pastiche() {
   const cancelPreview = async () => {
     await cameraRef.current.resumePreview();
     setIsPreview(false);
+  };
+
+  const zoomIn = async () => {
+    if (zoomValue <= 0.95) {
+      setZoomValue(zoomValue + 0.005);
+    }
+  };
+
+  const zoomOut = async () => {
+    if (zoomValue >= 0.05) {
+      setZoomValue(zoomValue - 0.005);
+    }
   };
 
   const previousOverlay = async () => {
@@ -150,6 +216,7 @@ export default function Pastiche() {
           type={cameraType}
           onCameraReady={onCameraReady}
           useCamera2Api={true}
+          zoom={zoomValue}
         >
           {Object.keys(activeOverlays).length > 0 && (
             <Image
@@ -167,15 +234,6 @@ export default function Pastiche() {
       <View style={styles.container}>
         {isPreview && (
           <View>
-            <Image
-              style={{
-                width: 350,
-                height: 250,
-              }}
-              source={{
-                uri: activeOverlays.overlays[currentOverlay].overlayUrl,
-              }}
-            />
             <TouchableOpacity
               onPress={cancelPreview}
               style={styles.closeButton}
@@ -200,7 +258,7 @@ export default function Pastiche() {
             animationStyle={styles.lottie}
             speed={1}
           >
-            <Text>Doing something...</Text>
+            <Text>Uploading...</Text>
           </AnimatedLoader>
         )}
         {!isPreview && (
@@ -229,6 +287,12 @@ export default function Pastiche() {
                 onPress={onSnap}
                 style={styles.capture}
               />
+              <TouchableOpacity disabled={!isCameraReady} onPress={zoomIn}>
+                <MaterialIcons name="zoom-in" size={28} color="white" />
+              </TouchableOpacity>
+              <TouchableOpacity disabled={!isCameraReady} onPress={zoomOut}>
+                <MaterialIcons name="zoom-out" size={28} color="white" />
+              </TouchableOpacity>
             </View>
           </View>
         )}
