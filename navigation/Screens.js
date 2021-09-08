@@ -12,6 +12,7 @@ import Pastiche from "../screens/Pastiche";
 import AuthLoading from "../screens/AuthLoading";
 import Pro from "../screens/Pro";
 import Featured from "../screens/Featured";
+import Portraits from "../screens/Portraits";
 import Profile from "../screens/Profile";
 import Register from "../screens/Register";
 import ConfirmSignUp from "../screens/ConfirmSignUp";
@@ -296,6 +297,23 @@ function FeaturedStack(props) {
               transparent
               white
               title="Featured"
+              navigation={navigation}
+              scene={scene}
+            />
+          ),
+          cardStyle: { backgroundColor: "#FFFFFF" },
+          headerTransparent: true,
+        }}
+      />
+      <Stack.Screen
+        name="Portraits"
+        component={Portraits}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              transparent
+              white
+              title="Portraits"
               navigation={navigation}
               scene={scene}
             />

@@ -6,9 +6,11 @@ import {
   Image,
   ImageBackground,
   Platform,
+  TouchableOpacity,
 } from "react-native";
 import { Block, Text, theme, Button as GaButton } from "galio-framework";
 import { LinearGradient } from "expo-linear-gradient";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 
 import { Button } from "../components";
 import { Images, nowTheme } from "../constants";
@@ -21,6 +23,8 @@ const thumbMeasure = (width - 48 - 32) / 3;
 
 export default function Featured() {
   const [activeOverlays, setActiveOverlays] = useState({});
+  const [isPortrait, setPortrait] = useState(false);
+  const [overlay, setOverlay] = useState(null);
 
   useEffect(() => {
     async function getOverlays() {
@@ -30,6 +34,15 @@ export default function Featured() {
 
     getOverlays();
   }, []);
+
+  showPortrait = (id) => {
+    setPortrait(true);
+    setOverlay(id);
+  };
+
+  const cancelPortrait = async () => {
+    setPortrait(false);
+  };
 
   return (
     <LinearGradient
@@ -62,14 +75,33 @@ export default function Featured() {
               >
                 <Block row space="between" style={{ flexWrap: "wrap" }}>
                   {Object.keys(activeOverlays).length > 0 &&
+                    !isPortrait &&
                     activeOverlays.overlays.map((img, imgIndex) => (
-                      <Image
-                        source={{ uri: img.overlayUrl }}
-                        key={`viewed-${img.overlayUrl}`}
-                        resizeMode="cover"
-                        style={styles.thumb}
-                      />
+                      <TouchableOpacity
+                        key={`button-${img.overlayUrl}`}
+                        // onPress={showPortrait}
+                        onPress={() => this.showPortrait(img.overlayId)}
+                      >
+                        <Image
+                          source={{ uri: img.overlayUrl }}
+                          key={`viewed-${img.overlayUrl}`}
+                          resizeMode="cover"
+                          style={styles.thumb}
+                        />
+                      </TouchableOpacity>
                     ))}
+                  {isPortrait && (
+                    <Block>
+                      <Text>{overlay}</Text>
+                      <TouchableOpacity
+                        onPress={cancelPortrait}
+                        style={styles.closeButton}
+                        activeOpacity={0.7}
+                      >
+                        <AntDesign name="close" size={32} color="#fff" />
+                      </TouchableOpacity>
+                    </Block>
+                  )}
                 </Block>
               </Block>
             </Block>
@@ -81,11 +113,26 @@ export default function Featured() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    ...StyleSheet.absoluteFillObject,
+  },
   profileContainer: {
     width,
     height,
     padding: 0,
     zIndex: 1,
+  },
+  closeButton: {
+    position: "absolute",
+    top: 35,
+    right: 20,
+    height: 50,
+    width: 50,
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#5A45FF",
+    opacity: 0.7,
   },
   profileBackground: {
     width,
