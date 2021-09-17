@@ -39,6 +39,11 @@ Amplify.configure({
         region: config.apiGateway.REGION,
       },
       {
+        name: "pastiche",
+        endpoint: config.apiGateway.URL,
+        region: config.apiGateway.REGION,
+      },
+      {
         name: "overlays",
         endpoint: config.apiGateway.URL,
         region: config.apiGateway.REGION,

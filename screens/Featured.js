@@ -6,16 +6,18 @@ import {
   Image,
   ImageBackground,
   Platform,
+  View,
   TouchableOpacity,
 } from "react-native";
 import { Block, Text, theme, Button as GaButton } from "galio-framework";
 import { LinearGradient } from "expo-linear-gradient";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
-
+import Carousel from "pinar";
 import { Button } from "../components";
 import { Images, nowTheme } from "../constants";
 import { HeaderHeight } from "../constants/utils";
 import { API, Storage } from "aws-amplify";
+import { S3Image } from "aws-amplify-react-native";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -25,6 +27,8 @@ export default function Featured() {
   const [activeOverlays, setActiveOverlays] = useState({});
   const [isPortrait, setPortrait] = useState(false);
   const [overlay, setOverlay] = useState(null);
+  const [activePastiche, setActivePastiche] = useState([]);
+  // const [photos, setPhotos] = useState([]);
 
   useEffect(() => {
     async function getOverlays() {
@@ -35,13 +39,35 @@ export default function Featured() {
     getOverlays();
   }, []);
 
-  showPortrait = (id) => {
+  async function showPortrait(id) {
+    console.log(id);
+
     setPortrait(true);
     setOverlay(id);
-  };
+    const data = await API.get("pastiche", "/pastiche/" + id);
+
+    console.log(data.body);
+
+    photos = [];
+    for (d in data.body) {
+      photo = {};
+      await Storage.get(data.body[d].portrait, {
+        level: "protected",
+      })
+        .then((image) => {
+          photo.photoUrl = image;
+          photo.latitude = data.body[d].latitude;
+          photos.push(photo);
+        })
+        .catch((err) => console.log(err));
+    }
+
+    setActivePastiche(photos);
+  }
 
   const cancelPortrait = async () => {
     setPortrait(false);
+    setOverlay(null);
   };
 
   return (
@@ -50,6 +76,7 @@ export default function Featured() {
       style={{ flex: 1 }}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
+      style={[styles.container, styles.linear]}
     >
       <Block
         style={{
@@ -79,8 +106,7 @@ export default function Featured() {
                     activeOverlays.overlays.map((img, imgIndex) => (
                       <TouchableOpacity
                         key={`button-${img.overlayUrl}`}
-                        // onPress={showPortrait}
-                        onPress={() => this.showPortrait(img.overlayId)}
+                        onPress={() => showPortrait(img.overlayId)}
                       >
                         <Image
                           source={{ uri: img.overlayUrl }}
@@ -91,8 +117,23 @@ export default function Featured() {
                       </TouchableOpacity>
                     ))}
                   {isPortrait && (
-                    <Block>
-                      <Text>{overlay}</Text>
+                    <Block style={styles.square}>
+                      <Carousel>
+                        {Object.keys(activePastiche).length > 0 &&
+                          activePastiche.map((pas, pasIndex) => (
+                            <Block key={`block-${pasIndex}`}>
+                              {/* <S3Image imgKey={pas.photoUrl} /> */}
+                              <Image
+                                style={styles.image}
+                                source={{ uri: pas.photoUrl }}
+                                key={`img-${pasIndex}`}
+                              />
+                              {/* <Text key={`viewed-${pasIndex}`}>
+                                {pas.photoUrl}
+                              </Text> */}
+                            </Block>
+                          ))}
+                      </Carousel>
                       <TouchableOpacity
                         onPress={cancelPortrait}
                         style={styles.closeButton}
@@ -169,6 +210,27 @@ const styles = StyleSheet.create({
     width: nowTheme.SIZES.BASE * 3,
     height: nowTheme.SIZES.BASE * 3,
     borderRadius: nowTheme.SIZES.BASE * 1.5,
+    justifyContent: "center",
+    zIndex: 99,
+    marginHorizontal: 5,
+  },
+  linear: {
+    backgroundColor: "green",
+  },
+  lottie: {
+    width: 100,
+    height: 100,
+  },
+  square: {
+    flex: 1,
+    paddingBottom: 75,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  image: {
+    height: Dimensions.get("window").width * 0.95,
+    width: Dimensions.get("window").width * 0.95,
     justifyContent: "center",
     zIndex: 99,
     marginHorizontal: 5,
