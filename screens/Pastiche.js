@@ -36,6 +36,11 @@ export default function Pastiche() {
   const [displayCurrentAddress, setDisplayCurrentAddress] = useState(
     "Wait, we are fetching you location..."
   );
+  const [location, setLocation] = useState({
+    lat: null,
+    long: null,
+    alt: null,
+  });
 
   useEffect(() => {
     async function getOverlays() {
@@ -78,7 +83,9 @@ export default function Pastiche() {
     let { coords } = await Location.getCurrentPositionAsync();
 
     if (coords) {
-      const { latitude, longitude } = coords;
+      const { latitude, longitude, altitude } = coords;
+
+      setLocation({ lat: latitude, long: longitude, alt: altitude });
       let response = await Location.reverseGeocodeAsync({
         latitude,
         longitude,
@@ -123,12 +130,7 @@ export default function Pastiche() {
       if (source) {
         await cameraRef.current.pausePreview();
         setIsPreview(true);
-        // setPhotoSource(source);
         setPhotoData({
-          lat: 50,
-          long: 22,
-          alt: 77,
-          // overlayId: activeOverlays.overlays[0].overlayId,
           source: source,
         });
       }
@@ -174,10 +176,10 @@ export default function Pastiche() {
     const photoUrl = photoData.source ? await s3Upload(photoData.source) : null;
 
     portrait = {
-      lat: photoData.lat,
-      long: photoData.long,
-      alt: photoData.alt,
-      overlayId: activeOverlays.overlays[0].overlayId,
+      lat: location.lat,
+      long: location.long,
+      alt: location.alt,
+      overlayId: activeOverlays.overlays[currentOverlay].overlayId,
       image: photoUrl,
     };
 

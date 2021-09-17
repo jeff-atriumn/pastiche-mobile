@@ -8,6 +8,7 @@ import {
   Platform,
   View,
   TouchableOpacity,
+  ImageBackgroundBase,
 } from "react-native";
 import { Block, Text, theme, Button as GaButton } from "galio-framework";
 import { LinearGradient } from "expo-linear-gradient";
@@ -17,7 +18,7 @@ import { Button } from "../components";
 import { Images, nowTheme } from "../constants";
 import { HeaderHeight } from "../constants/utils";
 import { API, Storage } from "aws-amplify";
-import { S3Image } from "aws-amplify-react-native";
+import * as Location from "expo-location";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -26,9 +27,9 @@ const thumbMeasure = (width - 48 - 32) / 3;
 export default function Featured() {
   const [activeOverlays, setActiveOverlays] = useState({});
   const [isPortrait, setPortrait] = useState(false);
-  const [overlay, setOverlay] = useState(null);
+  const [overlay, setOverlay] = useState({});
   const [activePastiche, setActivePastiche] = useState([]);
-  // const [photos, setPhotos] = useState([]);
+  const [displayAddress, setDisplayAddress] = useState(null);
 
   useEffect(() => {
     async function getOverlays() {
@@ -39,14 +40,23 @@ export default function Featured() {
     getOverlays();
   }, []);
 
-  async function showPortrait(id) {
-    console.log(id);
+  async function getLocation(loc) {
+    let response = await Location.reverseGeocodeAsync({
+      latitude: loc.lat,
+      longitude: loc.long,
+    });
 
+    for (let item of response) {
+      let address = `${item.city}, ${item.region}, ${item.country}`;
+
+      setDisplayAddress(address);
+    }
+  }
+
+  async function showPortrait(over) {
     setPortrait(true);
-    setOverlay(id);
-    const data = await API.get("pastiche", "/pastiche/" + id);
-
-    console.log(data.body);
+    setOverlay(over);
+    const data = await API.get("pastiche", "/pastiche/" + over.overlayId);
 
     photos = [];
     for (d in data.body) {
@@ -56,7 +66,10 @@ export default function Featured() {
       })
         .then((image) => {
           photo.photoUrl = image;
-          photo.latitude = data.body[d].latitude;
+          photo.location = getLocation({
+            lat: data.body[d].latitude,
+            long: data.body[d].longitude,
+          });
           photos.push(photo);
         })
         .catch((err) => console.log(err));
@@ -67,7 +80,7 @@ export default function Featured() {
 
   const cancelPortrait = async () => {
     setPortrait(false);
-    setOverlay(null);
+    setOverlay({});
   };
 
   return (
@@ -103,14 +116,14 @@ export default function Featured() {
                 <Block row space="between" style={{ flexWrap: "wrap" }}>
                   {Object.keys(activeOverlays).length > 0 &&
                     !isPortrait &&
-                    activeOverlays.overlays.map((img, imgIndex) => (
+                    activeOverlays.overlays.map((overlay, imgIndex) => (
                       <TouchableOpacity
-                        key={`button-${img.overlayUrl}`}
-                        onPress={() => showPortrait(img.overlayId)}
+                        key={`button-${overlay.overlayUrl}`}
+                        onPress={() => showPortrait(overlay)}
                       >
                         <Image
-                          source={{ uri: img.overlayUrl }}
-                          key={`viewed-${img.overlayUrl}`}
+                          source={{ uri: overlay.overlayUrl }}
+                          key={`viewed-${overlay.overlayUrl}`}
                           resizeMode="cover"
                           style={styles.thumb}
                         />
@@ -122,15 +135,24 @@ export default function Featured() {
                         {Object.keys(activePastiche).length > 0 &&
                           activePastiche.map((pas, pasIndex) => (
                             <Block key={`block-${pasIndex}`}>
-                              {/* <S3Image imgKey={pas.photoUrl} /> */}
-                              <Image
+                              <ImageBackground
                                 style={styles.image}
                                 source={{ uri: pas.photoUrl }}
                                 key={`img-${pasIndex}`}
-                              />
-                              {/* <Text key={`viewed-${pasIndex}`}>
-                                {pas.photoUrl}
-                              </Text> */}
+                              >
+                                <Image
+                                  style={{
+                                    width: 350,
+                                    height: 250,
+                                  }}
+                                  source={{
+                                    uri: overlay.overlayUrl,
+                                  }}
+                                />
+                                <Text key={`address-${pasIndex}`}>
+                                  {displayAddress}
+                                </Text>
+                              </ImageBackground>
                             </Block>
                           ))}
                       </Carousel>
