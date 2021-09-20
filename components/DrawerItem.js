@@ -20,7 +20,7 @@ class DrawerItem extends React.Component {
             style={{ opacity: 0.5 }}
           />
         );
-      case "My Portraits":
+      case "My Photos":
         return (
           <Icon
             name="album"

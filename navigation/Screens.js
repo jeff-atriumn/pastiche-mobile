@@ -12,6 +12,7 @@ import PasticheCamera from "../screens/PasticheCamera";
 import AuthLoading from "../screens/AuthLoading";
 import Pro from "../screens/Pro";
 import World from "../screens/World";
+import MyPhotos from "../screens/MyPhotos";
 import Portraits from "../screens/Portraits";
 import Profile from "../screens/Profile";
 import Register from "../screens/Register";
@@ -301,15 +302,22 @@ function WorldStack(props) {
           headerTransparent: true,
         }}
       />
+    </Stack.Navigator>
+  );
+}
+
+function MyPhotosStack(props) {
+  return (
+    <Stack.Navigator initialRouteName="World" mode="card" headerMode="screen">
       <Stack.Screen
-        name="Portraits"
-        component={Portraits}
+        name="MyPhotos"
+        component={MyPhotos}
         options={{
           header: ({ navigation, scene }) => (
             <Header
               transparent
               white
-              title="Portraits"
+              title="My Photos"
               navigation={navigation}
               scene={scene}
             />
@@ -502,6 +510,7 @@ function AppStack(props) {
       initialRouteName="PasticheCamera"
     >
       <Drawer.Screen name="Camera" component={CameraStack} />
+      <Drawer.Screen name="My Photos" component={MyPhotosStack} />
       <Drawer.Screen name="World" component={WorldStack} />
       <Drawer.Screen name="Profile" component={ProfileStack} />
       <Drawer.Screen name="Settings" component={SettingsStack} />

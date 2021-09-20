@@ -51,17 +51,6 @@ export default class Settings extends React.Component {
   };
 
   render() {
-    const recommended = [
-      { title: "Use FaceID to sign in", id: "face", type: "switch" },
-      { title: "Auto-Lock security", id: "autolock", type: "switch" },
-      { title: "Notifications", id: "NotificationsSettings", type: "button" },
-    ];
-
-    const payment = [
-      { title: "Manage Payment Options", id: "Payment", type: "button" },
-      { title: "Manage Gift Cards", id: "gift", type: "button" },
-    ];
-
     const privacy = [
       { title: "User Agreement", id: "Agreement", type: "button" },
       { title: "Privacy", id: "Privacy", type: "button" },
@@ -70,35 +59,8 @@ export default class Settings extends React.Component {
 
     return (
       <View style={styles.settings}>
-        <FlatList
-          data={recommended}
-          keyExtractor={(item, index) => item.id}
-          renderItem={this.renderItem}
-          ListHeaderComponent={
-            <Block center style={styles.title}>
-              <Text style={styles.titleText}>Recommended Settings</Text>
-              <Text style={styles.subtitleText}>
-                These are the most important settings
-              </Text>
-            </Block>
-          }
-        />
         <Block center style={styles.title}>
-          <Text style={styles.titleText}>Payment Settings</Text>
-          <Text style={styles.subtitleText}>
-            These are also important settings
-          </Text>
-        </Block>
-
-        <FlatList
-          data={payment}
-          keyExtractor={(item, index) => item.id}
-          renderItem={this.renderItem}
-        />
-
-        <Block center style={styles.title}>
-          <Text style={styles.titleText}>Privacy Settings</Text>
-          <Text style={styles.subtitleText}>Third most important settings</Text>
+          <Text style={styles.titleText}>Important Privacy Settings</Text>
         </Block>
         <FlatList
           data={privacy}

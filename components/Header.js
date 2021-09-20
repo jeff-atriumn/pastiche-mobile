@@ -82,7 +82,7 @@ class Header extends React.Component {
     }
 
     switch (title) {
-      case "Pastiche":
+      case "Camera":
         return [
           // <BellButton
           //   key="chat-home"
@@ -124,16 +124,16 @@ class Header extends React.Component {
         ];
       case "Profile":
         return [
-          <BellButton
-            key="chat-profile"
-            navigation={navigation}
-            isWhite={white}
-          />,
-          <BasketButton
-            key="basket-deals"
-            navigation={navigation}
-            isWhite={white}
-          />,
+          // <BellButton
+          //   key="chat-profile"
+          //   navigation={navigation}
+          //   isWhite={white}
+          // />,
+          // <BasketButton
+          //   key="basket-deals"
+          //   navigation={navigation}
+          //   isWhite={white}
+          // />,
         ];
       case "Product":
         return [
@@ -163,16 +163,16 @@ class Header extends React.Component {
         ];
       case "Settings":
         return [
-          <BellButton
-            key="chat-search"
-            navigation={navigation}
-            isWhite={white}
-          />,
-          <BasketButton
-            key="basket-search"
-            navigation={navigation}
-            isWhite={white}
-          />,
+          // <BellButton
+          //   key="chat-search"
+          //   navigation={navigation}
+          //   isWhite={white}
+          // />,
+          // <BasketButton
+          //   key="basket-search"
+          //   navigation={navigation}
+          //   isWhite={white}
+          // />,
         ];
       case "NotificationsSettings":
         return [
