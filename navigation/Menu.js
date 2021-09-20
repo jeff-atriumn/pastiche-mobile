@@ -25,7 +25,7 @@ function CustomDrawerContent({
   ...rest
 }) {
   const insets = useSafeArea();
-  const screens = ["Pastiche", "My Portraits", "Featured"];
+  const screens = ["Camera", "My Portraits", "World"];
 
   const utilityScreens = ["Profile", "Settings"];
 

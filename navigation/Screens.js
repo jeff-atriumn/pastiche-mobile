@@ -8,10 +8,10 @@ import { Icon } from "../components";
 import { nowTheme } from "../constants";
 
 // screens
-import Pastiche from "../screens/Pastiche";
+import PasticheCamera from "../screens/PasticheCamera";
 import AuthLoading from "../screens/AuthLoading";
 import Pro from "../screens/Pro";
-import Featured from "../screens/Featured";
+import World from "../screens/World";
 import Portraits from "../screens/Portraits";
 import Profile from "../screens/Profile";
 import Register from "../screens/Register";
@@ -281,22 +281,18 @@ function ProfileStack(props) {
   );
 }
 
-function FeaturedStack(props) {
+function WorldStack(props) {
   return (
-    <Stack.Navigator
-      initialRouteName="Featured"
-      mode="card"
-      headerMode="screen"
-    >
+    <Stack.Navigator initialRouteName="World" mode="card" headerMode="screen">
       <Stack.Screen
-        name="Featured"
-        component={Featured}
+        name="World"
+        component={World}
         options={{
           header: ({ navigation, scene }) => (
             <Header
               transparent
               white
-              title="Featured"
+              title="World"
               navigation={navigation}
               scene={scene}
             />
@@ -326,20 +322,16 @@ function FeaturedStack(props) {
   );
 }
 
-function PasticheStack(props) {
+function CameraStack(props) {
   return (
-    <Stack.Navigator
-      mode="card"
-      headerMode="screen"
-      initialRouteName="Pastiche"
-    >
+    <Stack.Navigator mode="card" headerMode="screen" initialRouteName="Camera">
       <Stack.Screen
-        name="Pastiche"
-        component={Pastiche}
+        name="Camera"
+        component={PasticheCamera}
         options={{
           header: ({ navigation, scene }) => (
             <Header
-              title="Pastiche"
+              title="Camera"
               // search
               // options
               navigation={navigation}
@@ -507,10 +499,10 @@ function AppStack(props) {
           fontWeight: "normal",
         },
       }}
-      initialRouteName="Pastiche"
+      initialRouteName="PasticheCamera"
     >
-      <Drawer.Screen name="Pastiche" component={PasticheStack} />
-      <Drawer.Screen name="Featured" component={FeaturedStack} />
+      <Drawer.Screen name="Camera" component={CameraStack} />
+      <Drawer.Screen name="World" component={WorldStack} />
       <Drawer.Screen name="Profile" component={ProfileStack} />
       <Drawer.Screen name="Settings" component={SettingsStack} />
     </Drawer.Navigator>

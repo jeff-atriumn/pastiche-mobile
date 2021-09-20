@@ -10,7 +10,7 @@ class DrawerItem extends React.Component {
     const { title, focused } = this.props;
 
     switch (title) {
-      case "Pastiche":
+      case "Camera":
         return (
           <Icon
             name="camera-compact2x"
@@ -30,7 +30,7 @@ class DrawerItem extends React.Component {
             style={{ opacity: 0.5 }}
           />
         );
-      case "Featured":
+      case "World":
         return (
           <Icon
             name="bookmark-22x"

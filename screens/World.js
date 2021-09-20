@@ -24,7 +24,7 @@ const { width, height } = Dimensions.get("screen");
 
 const thumbMeasure = (width - 48 - 32) / 3;
 
-export default function Featured() {
+export default function World() {
   const [activeOverlays, setActiveOverlays] = useState({});
   const [isPortrait, setPortrait] = useState(false);
   const [overlay, setOverlay] = useState({});
