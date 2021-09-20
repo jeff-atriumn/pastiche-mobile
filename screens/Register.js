@@ -205,20 +205,22 @@ class Register extends React.Component {
                           </Button>
                         </Block>
                         <Block center>
-                          <Button
-                            color="primary"
-                            onPress={() => this.handleLogin()}
-                            round
-                            style={styles.createButton}
+                          <Text
+                            style={{ fontFamily: "montserrat-regular" }}
+                            size={14}
+                            color={nowTheme.COLORS.BLACK}
                           >
+                            Already registered?{" "}
                             <Text
-                              style={{ fontFamily: "montserrat-bold" }}
-                              size={14}
-                              color={nowTheme.COLORS.WHITE}
+                              style={{
+                                textDecorationLine: "underline",
+                                color: "blue",
+                              }}
+                              onPress={() => this.handleLogin()}
                             >
-                              Login
+                              Sign In
                             </Text>
-                          </Button>
+                          </Text>
                         </Block>
                       </Block>
                     </Block>

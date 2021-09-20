@@ -143,20 +143,22 @@ class Login extends React.Component {
                           </Button>
                         </Block>
                         <Block center>
-                          <Button
-                            color="primary"
-                            round
-                            style={styles.createButton}
-                            onPress={() => this.handleSignUp()}
+                          <Text
+                            style={{ fontFamily: "montserrat-regular" }}
+                            size={14}
+                            color={nowTheme.COLORS.BLACK}
                           >
+                            Not yet registered?{" "}
                             <Text
-                              style={{ fontFamily: "montserrat-bold" }}
-                              size={14}
-                              color={nowTheme.COLORS.WHITE}
+                              style={{
+                                textDecorationLine: "underline",
+                                color: "blue",
+                              }}
+                              onPress={() => this.handleSignUp()}
                             >
                               Sign Up
                             </Text>
-                          </Button>
+                          </Text>
                         </Block>
                       </Block>
                     </Block>
