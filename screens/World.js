@@ -66,10 +66,10 @@ export default function World() {
       })
         .then((image) => {
           photo.photoUrl = image;
-          photo.location = getLocation({
-            lat: data.body[d].latitude,
-            long: data.body[d].longitude,
-          });
+          // photo.location = getLocation({
+          //   lat: data.body[d].latitude,
+          //   long: data.body[d].longitude,
+          // });
           photos.push(photo);
         })
         .catch((err) => console.log(err));
@@ -95,6 +95,7 @@ export default function World() {
         style={{
           flex: 1,
           flexDirection: "column",
+          alignItems: "center",
           justifyContent: "space-between",
         }}
       >
@@ -129,47 +130,63 @@ export default function World() {
                         />
                       </TouchableOpacity>
                     ))}
-                  {isPortrait && (
-                    <Block style={styles.square}>
-                      <Carousel>
-                        {Object.keys(activePastiche).length > 0 &&
-                          activePastiche.map((pas, pasIndex) => (
-                            <Block key={`block-${pasIndex}`}>
-                              <ImageBackground
-                                style={styles.image}
-                                source={{ uri: pas.photoUrl }}
-                                key={`img-${pasIndex}`}
-                              >
-                                <Image
-                                  style={{
-                                    width: 350,
-                                    height: 250,
-                                  }}
-                                  source={{
-                                    uri: overlay.overlayUrl,
-                                  }}
-                                />
-                                <Text key={`address-${pasIndex}`}>
-                                  {displayAddress}
-                                </Text>
-                              </ImageBackground>
-                            </Block>
-                          ))}
-                      </Carousel>
-                      <TouchableOpacity
-                        onPress={cancelPortrait}
-                        style={styles.closeButton}
-                        activeOpacity={0.7}
-                      >
-                        <AntDesign name="close" size={32} color="#fff" />
-                      </TouchableOpacity>
-                    </Block>
-                  )}
                 </Block>
               </Block>
             </Block>
           </ScrollView>
         </Block>
+        {isPortrait && (
+          <Block style={styles.square}>
+            <Carousel style={styles.carousel}>
+              {Object.keys(activePastiche).length > 0 &&
+                activePastiche.map((pas, pasIndex) => (
+                  <Block key={`block-${pasIndex}`}>
+                    <ImageBackground
+                      style={styles.image}
+                      source={{ uri: pas.photoUrl }}
+                      key={`img-${pasIndex}`}
+                    >
+                      <Image
+                        style={{
+                          width: 300,
+                          height: 200,
+                        }}
+                        source={{
+                          uri: overlay.overlayUrl,
+                        }}
+                      />
+                      <Text key={`address-${pasIndex}`}>{displayAddress}</Text>
+                    </ImageBackground>
+                  </Block>
+                ))}
+            </Carousel>
+            <TouchableOpacity
+              onPress={cancelPortrait}
+              style={styles.closeButton}
+              activeOpacity={0.7}
+            >
+              <AntDesign name="close" size={32} color="#fff" />
+            </TouchableOpacity>
+            <Block style={styles.location}>
+              <Block>
+                <Text
+                  style={{ fontFamily: "montserrat-bold" }}
+                  size={14}
+                  color={nowTheme.COLORS.BLACK}
+                >
+                  Naperville IL
+                </Text>
+                <Text
+                  style={{ fontFamily: "montserrat-regular" }}
+                  size={14}
+                  color={nowTheme.COLORS.BLACK}
+                >
+                  United States
+                </Text>
+              </Block>
+            </Block>
+          </Block>
+        )}
       </Block>
     </LinearGradient>
   );
@@ -196,6 +213,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#5A45FF",
     opacity: 0.7,
+  },
+  carousel: {
+    height: Dimensions.get("window").width * 0.9,
+    width: Dimensions.get("window").width * 0.9,
+    borderRadius: 5,
+    shadowColor: "rgba(0, 0, 0, 0.5)",
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 4,
+    shadowOpacity: 1,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   },
   profileBackground: {
     width,
@@ -244,18 +273,37 @@ const styles = StyleSheet.create({
     height: 100,
   },
   square: {
+    marginTop: 150,
     flex: 1,
     paddingBottom: 75,
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+    position: "absolute",
   },
   image: {
     height: Dimensions.get("window").width * 0.95,
     width: Dimensions.get("window").width * 0.95,
     justifyContent: "center",
+    alignItems: "center",
     zIndex: 99,
     marginHorizontal: 5,
+  },
+  location: {
+    height: 70,
+    width: Dimensions.get("window").width * 0.8,
+    backgroundColor: "white",
+    position: "absolute",
+    zIndex: 99,
+    bottom: Dimensions.get("window").height * 0.1,
+    left: Dimensions.get("window").width * 0.1,
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    // paddingLeft: 10,
+    // paddingRight: 10,
+    borderRadius: 10,
   },
 });
 
