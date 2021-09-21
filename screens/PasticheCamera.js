@@ -11,11 +11,13 @@ import {
 import { Camera } from "expo-camera";
 import AnimatedLoader from "react-native-animated-loader";
 import { LinearGradient } from "expo-linear-gradient";
-import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons, Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
+import Swiper from "react-native-web-swiper";
 
 import { s3Upload } from "../libs/awsLib";
 import { API } from "aws-amplify";
+import { Images, nowTheme } from "../constants";
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const CAPTURE_SIZE = Math.floor(WINDOW_HEIGHT * 0.08);
@@ -33,9 +35,12 @@ export default function PasticheCamera() {
   const [currentOverlay, setCurrentOverlay] = useState(0);
   const [zoomValue, setZoomValue] = useState(0);
   const [locationServiceEnabled, setLocationServiceEnabled] = useState(false);
-  const [displayCurrentAddress, setDisplayCurrentAddress] = useState(
-    "Wait, we are fetching you location..."
-  );
+  // const [displayCurrentAddress, setDisplayCurrentAddress] = useState(
+  //   "Wait, we are fetching you location..."
+  // );
+  const [city, setCity] = useState("");
+  const [region, setRegion] = useState("");
+  const [country, setCountry] = useState("");
   const [location, setLocation] = useState({
     lat: null,
     long: null,
@@ -94,8 +99,10 @@ export default function PasticheCamera() {
       for (let item of response) {
         let address = `${item.city}, ${item.region}, ${item.country}`;
 
-        console.log(address);
-        setDisplayCurrentAddress(address);
+        setCity(item.city);
+        setRegion(item.region);
+        setCountry(item.country);
+        // setDisplayCurrentAddress(address);
       }
     }
   };
@@ -223,8 +230,8 @@ export default function PasticheCamera() {
           {Object.keys(activeOverlays).length > 0 && (
             <Image
               style={{
-                width: 350,
-                height: 250,
+                width: 300,
+                height: 200,
               }}
               source={{
                 uri: activeOverlays.overlays[currentOverlay].overlayUrl,
@@ -235,7 +242,7 @@ export default function PasticheCamera() {
       </View>
       <View style={styles.container}>
         {isPreview && (
-          <View>
+          <View style={styles.location}>
             <TouchableOpacity
               onPress={cancelPreview}
               style={styles.closeButton}
@@ -243,19 +250,35 @@ export default function PasticheCamera() {
             >
               <AntDesign name="close" size={32} color="#fff" />
             </TouchableOpacity>
+            <View>
+              <Text
+                style={{ fontFamily: "montserrat-bold" }}
+                size={14}
+                color={nowTheme.COLORS.BLACK}
+              >
+                {city} {region}
+              </Text>
+              <Text
+                style={{ fontFamily: "montserrat-regular" }}
+                size={14}
+                color={nowTheme.COLORS.BLACK}
+              >
+                {country}
+              </Text>
+            </View>
             <TouchableOpacity
               onPress={upload}
               style={styles.uploadButton}
               activeOpacity={0.7}
             >
-              <AntDesign name="arrowup" size={32} color="#fff" />
+              <Ionicons name="cloud-upload-outline" size={32} color="#fff" />
             </TouchableOpacity>
           </View>
         )}
         {isUploading && (
           <AnimatedLoader
             visible={true}
-            overlayColor="rgba(255,255,255,0.75)"
+            overlayColor="rgba(0,0,0,0.75)"
             source={require("../assets/60041-upload.json")}
             animationStyle={styles.lottie}
             speed={1}
@@ -310,6 +333,22 @@ const styles = StyleSheet.create({
   linear: {
     backgroundColor: "green",
   },
+  location: {
+    height: 70,
+    width: Dimensions.get("window").width * 0.8,
+    backgroundColor: "white",
+    position: "absolute",
+    zIndex: 99,
+    bottom: Dimensions.get("window").height * 0.1,
+    left: Dimensions.get("window").width * 0.1,
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderRadius: 10,
+  },
   lottie: {
     width: 100,
     height: 100,
@@ -322,8 +361,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   camera: {
-    height: Dimensions.get("window").width * 0.95,
-    width: Dimensions.get("window").width * 0.95,
+    height: Dimensions.get("window").width * 0.9,
+    width: Dimensions.get("window").width * 0.9,
     borderRadius: 5,
     shadowColor: "rgba(0, 0, 0, 0.5)",
     shadowOffset: { width: 0, height: 3 },
@@ -353,27 +392,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   closeButton: {
-    position: "absolute",
-    top: 35,
-    right: 20,
     height: 50,
     width: 50,
     borderRadius: 25,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#5A45FF",
+    backgroundColor: "crimson",
     opacity: 0.7,
   },
   uploadButton: {
-    position: "absolute",
-    top: 95,
-    right: 20,
     height: 50,
     width: 50,
     borderRadius: 25,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "tomato",
+    backgroundColor: "limegreen",
     opacity: 0.7,
   },
   capture: {
@@ -384,5 +417,7 @@ const styles = StyleSheet.create({
     borderRadius: Math.floor(CAPTURE_SIZE / 2),
     marginBottom: 28,
     marginHorizontal: 30,
+    borderWidth: 3,
+    borderColor: "white",
   },
 });
