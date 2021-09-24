@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { Block, Text, theme, Button as GaButton } from "galio-framework";
 import { LinearGradient } from "expo-linear-gradient";
-import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
 import Carousel from "pinar";
 import { Button } from "../components";
 import { Images, nowTheme } from "../constants";
@@ -22,7 +22,7 @@ import * as Location from "expo-location";
 
 const { width, height } = Dimensions.get("screen");
 
-const thumbMeasure = (width - 48 - 32) / 3;
+const thumbMeasure = (width - 48 - 32) / 4;
 
 export default function World() {
   const [activeOverlays, setActiveOverlays] = useState({});
@@ -30,28 +30,28 @@ export default function World() {
   const [overlay, setOverlay] = useState({});
   const [activePastiche, setActivePastiche] = useState([]);
   const [displayAddress, setDisplayAddress] = useState(null);
+  const [featuredOverlays, setFeaturedOverlays] = useState([]);
+  const [sponsoredOverlays, setSponsoredOverlays] = useState([]);
 
   useEffect(() => {
     async function getOverlays() {
       const data = await API.get("overlays", "/overlays");
-      setActiveOverlays({ overlays: data.body });
+      setActiveOverlays({
+        overlays: data.body.filter(
+          (x) => x.featured != "true" && x.sponsored != "true"
+        ),
+      });
+      setFeaturedOverlays({
+        overlays: data.body.filter((x) => x.featured === "true"),
+      });
+      setSponsoredOverlays({
+        overlays: data.body.filter((x) => x.sponsored === "true"),
+      });
     }
 
+    console.log(sponsoredOverlays);
     getOverlays();
   }, []);
-
-  async function getLocation(loc) {
-    let response = await Location.reverseGeocodeAsync({
-      latitude: loc.lat,
-      longitude: loc.long,
-    });
-
-    for (let item of response) {
-      let address = `${item.city}, ${item.region}, ${item.country}`;
-
-      setDisplayAddress(address);
-    }
-  }
 
   async function showPortrait(over) {
     setPortrait(true);
@@ -66,10 +66,6 @@ export default function World() {
       })
         .then((image) => {
           photo.photoUrl = image;
-          // photo.location = getLocation({
-          //   lat: data.body[d].latitude,
-          //   long: data.body[d].longitude,
-          // });
           photos.push(photo);
         })
         .catch((err) => console.log(err));
@@ -114,22 +110,102 @@ export default function World() {
                   paddingHorizontal: 15,
                 }}
               >
-                <Block row space="between" style={{ flexWrap: "wrap" }}>
-                  {Object.keys(activeOverlays).length > 0 &&
-                    !isPortrait &&
-                    activeOverlays.overlays.map((overlay, imgIndex) => (
-                      <TouchableOpacity
-                        key={`button-${overlay.overlayUrl}`}
-                        onPress={() => showPortrait(overlay)}
-                      >
-                        <Image
-                          source={{ uri: overlay.overlayUrl }}
-                          key={`viewed-${overlay.overlayUrl}`}
-                          resizeMode="cover"
-                          style={styles.thumb}
-                        />
-                      </TouchableOpacity>
-                    ))}
+                <Block row space="between">
+                  <ScrollView horizontal={true}>
+                    {Object.keys(featuredOverlays).length > 0 &&
+                      !isPortrait &&
+                      featuredOverlays.overlays.map((overlay, imgIndex) => (
+                        <TouchableOpacity
+                          key={`button-${overlay.overlayUrl}`}
+                          onPress={() => showPortrait(overlay)}
+                          style={{ padding: 5 }}
+                        >
+                          {overlay.featured == "true" && (
+                            <AntDesign
+                              name="star"
+                              size={16}
+                              color="yellow"
+                              style={{
+                                zIndex: 99,
+                                marginTop: 20,
+                                marginLeft: -1,
+                                position: "absolute",
+                              }}
+                            />
+                          )}
+                          <Image
+                            source={{ uri: overlay.overlayUrl }}
+                            key={`viewed-${overlay.overlayUrl}`}
+                            resizeMode="cover"
+                            style={styles.thumb}
+                          />
+                        </TouchableOpacity>
+                      ))}
+                  </ScrollView>
+                </Block>
+                <Block row space="between">
+                  <ScrollView horizontal={true}>
+                    {Object.keys(sponsoredOverlays).length > 0 &&
+                      !isPortrait &&
+                      sponsoredOverlays.overlays.map((overlay, imgIndex) => (
+                        <TouchableOpacity
+                          key={`button-${overlay.overlayUrl}`}
+                          onPress={() => showPortrait(overlay)}
+                          style={{ padding: 5 }}
+                        >
+                          {overlay.sponsored == "true" && (
+                            <FontAwesome5
+                              name="adversal"
+                              size={16}
+                              color="yellow"
+                              style={{
+                                zIndex: 99,
+                                marginTop: 20,
+                                position: "absolute",
+                              }}
+                            />
+                          )}
+                          <Image
+                            source={{ uri: overlay.overlayUrl }}
+                            key={`viewed-${overlay.overlayUrl}`}
+                            resizeMode="cover"
+                            style={styles.thumb}
+                          />
+                        </TouchableOpacity>
+                      ))}
+                  </ScrollView>
+                </Block>
+                <Block row space="between">
+                  <ScrollView horizontal={true}>
+                    {Object.keys(activeOverlays).length > 0 &&
+                      !isPortrait &&
+                      activeOverlays.overlays.map((overlay, imgIndex) => (
+                        <TouchableOpacity
+                          key={`button-${overlay.overlayUrl}`}
+                          onPress={() => showPortrait(overlay)}
+                          style={{ padding: 5 }}
+                        >
+                          {overlay.sponsored == "true" && (
+                            <FontAwesome5
+                              name="adversal"
+                              size={16}
+                              color="yellow"
+                              style={{
+                                zIndex: 99,
+                                marginTop: 20,
+                                position: "absolute",
+                              }}
+                            />
+                          )}
+                          <Image
+                            source={{ uri: overlay.overlayUrl }}
+                            key={`viewed-${overlay.overlayUrl}`}
+                            resizeMode="cover"
+                            style={styles.thumb}
+                          />
+                        </TouchableOpacity>
+                      ))}
+                  </ScrollView>
                 </Block>
               </Block>
             </Block>
@@ -148,15 +224,32 @@ export default function World() {
                     >
                       <Image
                         style={{
-                          width: 300,
-                          height: 200,
+                          width: Dimensions.get("window").width * 0.35,
+                          height: Dimensions.get("window").height * 0.25,
                         }}
                         source={{
                           uri: overlay.overlayUrl,
                         }}
                       />
-                      <Text key={`address-${pasIndex}`}>{displayAddress}</Text>
                     </ImageBackground>
+                    <Block style={styles.location}>
+                      <Block>
+                        <Text
+                          style={{ fontFamily: "montserrat-bold" }}
+                          size={14}
+                          color={nowTheme.COLORS.BLACK}
+                        >
+                          {pas.city} {pas.region}
+                        </Text>
+                        <Text
+                          style={{ fontFamily: "montserrat-regular" }}
+                          size={14}
+                          color={nowTheme.COLORS.BLACK}
+                        >
+                          {pas.country}
+                        </Text>
+                      </Block>
+                    </Block>
                   </Block>
                 ))}
             </Carousel>
@@ -167,24 +260,6 @@ export default function World() {
             >
               <AntDesign name="close" size={32} color="#fff" />
             </TouchableOpacity>
-            <Block style={styles.location}>
-              <Block>
-                <Text
-                  style={{ fontFamily: "montserrat-bold" }}
-                  size={14}
-                  color={nowTheme.COLORS.BLACK}
-                >
-                  Naperville IL
-                </Text>
-                <Text
-                  style={{ fontFamily: "montserrat-regular" }}
-                  size={14}
-                  color={nowTheme.COLORS.BLACK}
-                >
-                  United States
-                </Text>
-              </Block>
-            </Block>
           </Block>
         )}
       </Block>
@@ -282,8 +357,8 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   image: {
-    height: Dimensions.get("window").width * 0.95,
-    width: Dimensions.get("window").width * 0.95,
+    height: Dimensions.get("window").width * 0.9,
+    width: Dimensions.get("window").width * 0.9,
     justifyContent: "center",
     alignItems: "center",
     zIndex: 99,

@@ -90,19 +90,20 @@ export default function PasticheCamera() {
     if (coords) {
       const { latitude, longitude, altitude } = coords;
 
-      setLocation({ lat: latitude, long: longitude, alt: altitude });
       let response = await Location.reverseGeocodeAsync({
         latitude,
         longitude,
       });
 
       for (let item of response) {
-        let address = `${item.city}, ${item.region}, ${item.country}`;
-
-        setCity(item.city);
-        setRegion(item.region);
-        setCountry(item.country);
-        // setDisplayCurrentAddress(address);
+        setLocation({
+          lat: latitude,
+          long: longitude,
+          alt: altitude,
+          city: item.city,
+          region: item.region,
+          country: item.country,
+        });
       }
     }
   };
@@ -186,6 +187,9 @@ export default function PasticheCamera() {
       lat: location.lat,
       long: location.long,
       alt: location.alt,
+      city: location.city,
+      region: location.region,
+      country: location.country,
       overlayId: activeOverlays.overlays[currentOverlay].overlayId,
       image: photoUrl,
     };
@@ -230,8 +234,8 @@ export default function PasticheCamera() {
           {Object.keys(activeOverlays).length > 0 && (
             <Image
               style={{
-                width: 300,
-                height: 200,
+                width: Dimensions.get("window").width * 0.35,
+                height: Dimensions.get("window").height * 0.25,
               }}
               source={{
                 uri: activeOverlays.overlays[currentOverlay].overlayUrl,
@@ -256,14 +260,14 @@ export default function PasticheCamera() {
                 size={14}
                 color={nowTheme.COLORS.BLACK}
               >
-                {city} {region}
+                {location.city} {location.region}
               </Text>
               <Text
                 style={{ fontFamily: "montserrat-regular" }}
                 size={14}
                 color={nowTheme.COLORS.BLACK}
               >
-                {country}
+                {location.country}
               </Text>
             </View>
             <TouchableOpacity
@@ -312,12 +316,14 @@ export default function PasticheCamera() {
                 onPress={onSnap}
                 style={styles.capture}
               />
-              <TouchableOpacity disabled={!isCameraReady} onPress={zoomIn}>
-                <MaterialIcons name="zoom-in" size={28} color="white" />
-              </TouchableOpacity>
-              <TouchableOpacity disabled={!isCameraReady} onPress={zoomOut}>
-                <MaterialIcons name="zoom-out" size={28} color="white" />
-              </TouchableOpacity>
+              <View>
+                <TouchableOpacity disabled={!isCameraReady} onPress={zoomIn}>
+                  <MaterialIcons name="zoom-in" size={28} color="white" />
+                </TouchableOpacity>
+                <TouchableOpacity disabled={!isCameraReady} onPress={zoomOut}>
+                  <MaterialIcons name="zoom-out" size={28} color="white" />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         )}
