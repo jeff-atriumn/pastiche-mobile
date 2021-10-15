@@ -38,14 +38,19 @@ export default function World() {
       const data = await API.get("overlays", "/overlays");
       setActiveOverlays({
         overlays: data.body.filter(
-          (x) => x.featured != "true" && x.sponsored != "true"
+          (x) =>
+            x.featured != "true" && x.sponsored != "true" && x.active === "true"
         ),
       });
       setFeaturedOverlays({
-        overlays: data.body.filter((x) => x.featured === "true"),
+        overlays: data.body.filter(
+          (x) => x.featured === "true" && x.active === "true"
+        ),
       });
       setSponsoredOverlays({
-        overlays: data.body.filter((x) => x.sponsored === "true"),
+        overlays: data.body.filter(
+          (x) => x.sponsored === "true" && x.active === "true"
+        ),
       });
     }
 
